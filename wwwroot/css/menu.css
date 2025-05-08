@@ -1,0 +1,36 @@
+.menu {
+	background-color: rgb(54, 142, 250);
+	padding: auto;
+	border-radius: 10px;
+	position: relative;
+	justify-content: center;
+	z-index: 1000;
+}
+
+.menu ul {
+	display: flex;
+	justify-content: center;
+	gap: 100px;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+	white-space: nowrap;
+}
+
+.menu li {
+	align-items: center;
+	font-size: 16px;
+	margin: 0;
+	padding: 15px 35px;
+	font-weight: bold;
+	transition: background-color 0.3s ease-in-out;
+}
+
+.menu li :hover {
+	color: rgb(31, 66, 221);
+	text-decoration: underline;
+}
+.menu ul a {
+	text-decoration: none;
+	color: white;
+}

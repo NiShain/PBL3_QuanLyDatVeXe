@@ -1,0 +1,47 @@
+.topbar {
+	background: linear-gradient(to right, white, #61b5ff);
+	background-repeat: no-repeat;
+	background-attachment: fixed;
+	align-items: center;
+	justify-content: space-between;
+	display: flex;
+}
+#logo {
+	width: 100px;
+	height: auto;
+}
+
+.left-section {
+	display: flex;
+	gap: 30px;
+}
+
+.center-section {
+	display: flex;
+	justify-content: center;
+}
+
+.right-section {
+	display: flex;
+	gap: 30px;
+}
+
+.slogan {
+	color: rgba(12, 113, 196, 0.999);
+	margin-left: 100px;
+}
+
+.btn-login {
+	margin-right: 100px;
+	color: rgb(31, 31, 31);
+	padding: 10px;
+	font-size: 14px;
+	border: 0;
+	background: rgb(255, 255, 255);
+	border-radius: 40px;
+}
+
+.btn-login a {
+	text-decoration: none;
+	color: rgb(65, 65, 65);
+}

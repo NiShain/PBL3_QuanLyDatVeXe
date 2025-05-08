@@ -1,0 +1,98 @@
+.search-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 10px;
+    width: 100%;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.search-input {
+    padding: 12px;
+    width: 300px;
+    height: 45px;
+    margin-top: 20px;
+    border: 2px solid #3451d6;
+    border-radius: 8px;
+    background-color: white;
+    color: black;
+    font-size: 16px;
+}
+
+.swap-btn {
+    width: 150px;
+    height: 45px;
+    background: #3451d6;
+    color: white;
+    border: none;
+    font-size: 16px;
+    padding: 10px;
+    margin-top: 20px;
+    cursor: pointer;
+    border-radius: 8px;
+}
+
+.search-container-btn {
+    width: 150px;
+    height: 45px;
+    background: #3451d6;
+    color: white;
+    border: none;
+    margin-top: 20px;
+    font-size: 16px;
+    padding: 10px;
+    margin-left: 10px;
+    cursor: pointer;
+    border-radius: 8px;
+}
+
+.search-container-btn:hover {
+    background: #2b3ea8;
+}
+
+.schedule-table {
+    width: 90%;
+    border-collapse: separate;
+    border-spacing: 0px;
+    border-width: 1px;
+    background: rgb(226, 239, 239);
+    color: black;
+    text-align: left;
+    margin: auto;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid black;
+    margin-bottom: 50px;
+    margin-top: 50px;
+}
+
+.schedule-table th {
+    background: #0a366adf;
+    color: white;
+    padding: 15px;
+    text-align: center;
+    font-size: 16px;
+    border: 1px solid black;
+}
+
+.schedule-table td {
+    padding: 12px;
+    text-align: center;
+    font-size: 16px;
+    border: 1px solid black;
+}
+.search-box {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    width: 100%;
+    max-width: 1000px;
+}
+
+

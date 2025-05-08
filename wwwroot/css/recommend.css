@@ -1,0 +1,79 @@
+.popular-trip {
+	background-color: rgb(230, 246, 250);
+	align-items: center;
+	flex-direction: column;
+	padding-top: 20px;
+	padding-bottom: 100px;
+}
+
+.intro {
+	text-align: center;
+	padding-bottom: 20px;
+}
+
+.intro p {
+	font-size: 24px;
+}
+
+h1 {
+	color: rgb(0, 60, 255);
+}
+
+#HN {
+	border-radius: 20px;
+}
+
+.trip-container {
+	justify-content: space-around;
+	align-items: center;
+	display: flex;
+}
+
+.box {
+	justify-content: space-between;
+	width: 360px;
+	min-height: 289px;
+	text-align: left;
+	align-items: center;
+	gap: 20px;
+	border: 1px solid black;
+	border-radius: 30px;
+	box-shadow: 0 10px 10px rgba(0, 0, 0, 0.4);
+}
+
+.route {
+	font-size: 18px;
+	margin: 20px;
+	direction: column;
+	position: relative;
+}
+
+.img-route {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	overflow: hidden;
+}
+
+.route-destination {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	width: 100%;
+	padding: 10px;
+	border-top: 1px solid gray;
+}
+
+.text-overlay {
+	position: absolute;
+	bottom: 10px;
+	left: 10px;
+	color: white;
+	font-size: 16px;
+	padding: 5px 10px;
+}
+
+.route-city {
+	font-weight: bold;
+	font-size: 19px;
+}

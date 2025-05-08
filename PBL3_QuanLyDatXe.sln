@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35931.197
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PBL3_QuanLyDatXe", "PBL3_QuanLyDatXe.csproj", "{78ADB673-5BB3-479E-96B5-641ED4FC4B8D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{78ADB673-5BB3-479E-96B5-641ED4FC4B8D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{78ADB673-5BB3-479E-96B5-641ED4FC4B8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{78ADB673-5BB3-479E-96B5-641ED4FC4B8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{78ADB673-5BB3-479E-96B5-641ED4FC4B8D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {DFF22D32-6CBE-4FCB-B588-97D4E35DCABF}
+	EndGlobalSection
+EndGlobal
