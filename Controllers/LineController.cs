@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using PBL3_QuanLyDatXe.Data;
 using PBL3_QuanLyDatXe.Models;
 
