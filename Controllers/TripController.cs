@@ -105,8 +105,7 @@ namespace PBL3_QuanLyDatXe.Controllers
 
         // POST: Trip/Create
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("id,Routeid,ngayDi,gioDi,soGhe,sogheconTrong")] Trip trip)
+        public async Task<IActionResult> Create(Trip trip)
         {
             if (ModelState.IsValid)
             {

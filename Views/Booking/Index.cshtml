@@ -1,44 +1,44 @@
-﻿@model IEnumerable<Booking>
+﻿@* @model IEnumerable<Booking> *@
 
-@{
-    ViewBag.Title = "Danh sách vé đã đặt";
-}
+@* @{ *@
+@*     ViewBag.Title = "Danh sách vé đã đặt"; *@
+@* } *@
 
-<h2>Danh sách vé đã đặt</h2>
+@* <h2>Danh sách vé đã đặt</h2> *@
 
-@if (TempData["Success"] != null)
-{
-    <div class="alert alert-success">@TempData["Success"]</div>
-}
-@if (TempData["Error"] != null)
-{
-    <div class="alert alert-danger">@TempData["Error"]</div>
-}
+@* @if (TempData["Success"] != null) *@
+@* { *@
+@*     <div class="alert alert-success">@TempData["Success"]</div> *@
+@* } *@
+@* @if (TempData["Error"] != null) *@
+@* { *@
+@*     <div class="alert alert-danger">@TempData["Error"]</div> *@
+@* } *@
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Mã vé</th>
-            <th>Chuyến đi</th>
-            <th>Ngày đi</th>
-            <th>Giờ đi</th>
-            <th>Ngày đặt</th>
-            <th>Xác nhận hủy vé</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var booking in Model)
-        {
-            <tr>
-                <td>@booking.id</td>
-                <td>@booking.TripId</td>
-                <td>@booking.Trip.ngayDi.ToString("dd/MM/yyyy")</td>
-                <td>@booking.Trip.gioDi.ToString("HH:mm")</td>
-                <td>@booking.BookingTime.ToString("dd/MM/yyyy HH:mm")</td>
-                <td>
-                    <a asp-action="Cancel" asp-route-id="@booking.id" class="btn btn-danger">Hủy vé</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+@* <table class="table"> *@
+@*     <thead> *@
+@*         <tr> *@
+@*             <th>Mã vé</th> *@
+@*             <th>Chuyến đi</th> *@
+@*             <th>Ngày đi</th> *@
+@*             <th>Giờ đi</th> *@
+@*             <th>Ngày đặt</th> *@
+@*             <th>Xác nhận hủy vé</th> *@
+@*         </tr> *@
+@*     </thead> *@
+@*     <tbody> *@
+@*         @foreach (var booking in Model) *@
+@*         { *@
+@*             <tr> *@
+@*                 <td>@booking.id</td> *@
+@*                 <td>@booking.TripId</td> *@
+@*                 <td>@booking.Trip.ngayDi.ToString("dd/MM/yyyy")</td> *@
+@*                 <td>@booking.Trip.gioDi.ToString("HH:mm")</td> *@
+@*                 <td>@booking.BookingTime.ToString("dd/MM/yyyy HH:mm")</td> *@
+@*                 <td> *@
+@*                     <a asp-action="Cancel" asp-route-id="@booking.id" class="btn btn-danger">Hủy vé</a> *@
+@*                 </td> *@
+@*             </tr> *@
+@*         } *@
+@*     </tbody> *@
+@* </table> *@
