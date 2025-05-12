@@ -41,7 +41,6 @@ namespace PBL3_QuanLyDatXe.Controllers
         }
 
         [HttpPost]
-        [HttpPost]
         public async Task<IActionResult> ConfirmBooking(int tripId, int selectedSeat)
         {
             // Lấy ID khách hàng từ session hoặc User.Identity
