@@ -18,6 +18,8 @@ namespace PBL3_QuanLyDatXe.Models
         public int soGhe { get; set; }
         public int sogheconTrong { get; set; }
 
+        public Decimal giaVe { get; set; }
+
         public ICollection<Ticket>? Tickets { get; set; }
 
     }

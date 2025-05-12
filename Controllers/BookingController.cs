@@ -62,7 +62,7 @@ namespace PBL3_QuanLyDatXe.Controllers
 
             _context.Tickets.Add(ticket);
 
-            // Cập nhật ghế còn trống
+            
             var trip = await _context.Trips.FindAsync(tripId);
             trip.sogheconTrong -= 1;
 
