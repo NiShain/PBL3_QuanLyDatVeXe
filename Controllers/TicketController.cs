@@ -23,7 +23,7 @@ namespace PBL3_QuanLyDatXe.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> CreateTicketFromBooking(int tripId, int seatNumber)
+        public async Task<IActionResult> Create(int tripId, int seatNumber)
         {
             // Lấy người dùng hiện tại
             var user = await _context.Users.FirstOrDefaultAsync(u => u.ten == User.Identity.Name);
@@ -57,6 +57,19 @@ namespace PBL3_QuanLyDatXe.Controllers
             await _context.SaveChangesAsync();
 
             return Ok(new { success = true, code = code });
+        }
+        public async Task<IActionResult> Details()
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.ten == User.Identity.Name);
+            var customer = await _context.Customers.FirstOrDefaultAsync(c => c.UserId == user.id);
+
+            var tickets = await _context.Tickets
+                .Include(t => t.Trip)
+                .Include(t => t.Trip.Route)
+                .Where(t => t.Customerid == customer.id)
+                .ToListAsync();
+
+            return View(tickets);
         }
     }
 }

@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using PBL3_QuanLyDatXe.ViewModels;
 using PBL3_QuanLyDatXe.Models;
 using PBL3_QuanLyDatXe.Data;
+using System.Threading.Tasks;
 
 
 namespace PBL3_QuanLyDatXe.Controllers
@@ -14,25 +15,18 @@ namespace PBL3_QuanLyDatXe.Controllers
         {
             _context = context;
         }
-        private bool IsAdmin()
+        public async Task<IActionResult> Index()
         {
-            var role = HttpContext.Session.GetString("role");
-            return role == "Admin";
-        }
-        public IActionResult Index()
-        {
-            return View();
+            var Buses = await _context.Buses.ToListAsync();
+            return View(Buses);
         }
         public IActionResult Create()
         {
             return View();
         }
+        [HttpPost]
         public async Task<IActionResult> Create(BusViewModels bus)
         {
-            if (!IsAdmin())
-            {
-                return RedirectToAction("#", "#");
-            }
             if (ModelState.IsValid)
             {
                 var Bus = new Bus
@@ -60,10 +54,7 @@ namespace PBL3_QuanLyDatXe.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(Bus bus)
         {
-            if (!IsAdmin())
-            {
-                return RedirectToAction("#", "#");
-            }
+            
             if (ModelState.IsValid)
             {
                 _context.Buses.Update(bus);
@@ -74,10 +65,7 @@ namespace PBL3_QuanLyDatXe.Controllers
         }
         public async Task<IActionResult> Delete(int id)
         {
-            if (!IsAdmin())
-            {
-                return RedirectToAction("#", "#");
-            }
+            
             var bus = await _context.Buses.FindAsync(id);
             if (bus == null)
             {
@@ -88,10 +76,7 @@ namespace PBL3_QuanLyDatXe.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (!IsAdmin())
-            {
-                return RedirectToAction("#", "#");
-            }
+           
             var bus = await _context.Buses.FindAsync(id);
             if (bus != null)
             {

@@ -1,9 +1,14 @@
+using Microsoft.EntityFrameworkCore;
+using PBL3_QuanLyDatXe.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+builder.Services.AddSession();                
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddControllersWithViews();
-
-var app = builder.Build();
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+WebApplication app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -13,11 +18,14 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+
+
 app.UseHttpsRedirection();
 app.UseRouting();
+app.UseSession();
 
 app.UseAuthorization();
-
+app.UseAuthentication();
 app.MapStaticAssets();
 
 app.MapControllerRoute(

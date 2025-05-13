@@ -2,7 +2,7 @@
 
 namespace PBL3_QuanLyDatXe.ViewModels
 {
-    public class BookingViewModels
+    public class TicketViewModels
     {
         public int SelectedRouteId { get; set; }
         public int SelectedTripId { get; set; }

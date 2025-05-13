@@ -1,0 +1,27 @@
+﻿@model PBL3_QuanLyDatXe.ViewModels.BusViewModels
+
+@{
+    ViewData["Title"] = "Thêm xe mới";
+}
+
+<h2>Thêm xe mới</h2>
+
+<form asp-action="Create" method="post">
+    <div class="form-group">
+        <label asp-for="tenXe"></label>
+        <input asp-for="tenXe" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="bienSo"></label>
+        <input asp-for="bienSo" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="soGhe"></label>
+        <input asp-for="soGhe" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="loaiXe"></label>
+        <input asp-for="loaiXe" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-primary">Lưu</button>
+</form>

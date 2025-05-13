@@ -1,0 +1,36 @@
+﻿@model IEnumerable<PBL3_QuanLyDatXe.Models.Bus>
+
+@{
+    ViewData["Title"] = "Danh sách xe";
+}
+
+<h2>Danh sách xe</h2>
+
+<a asp-action="Create" class="btn btn-primary">Thêm xe</a>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Tên xe</th>
+            <th>Biển số</th>
+            <th>Số ghế</th>
+            <th>Loại xe</th>
+            <th>Hành động</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.tenXe</td>
+                <td>@item.bienSo</td>
+                <td>@item.soGhe</td>
+                <td>@item.loaiXe</td>
+                <td>
+                    @*<a asp-action="Edit" asp-route-id="@item.id" class="btn btn-warning">Sửa</a>*@
+                    <a asp-action="Delete" asp-route-id="@item.id" class="btn btn-danger">Xoá</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

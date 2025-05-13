@@ -14,6 +14,7 @@ namespace PBL3_QuanLyDatXe.Controllers
         {
             _context = context;
         }
+
         public IActionResult Index()
         {
             return View();
@@ -43,9 +44,35 @@ namespace PBL3_QuanLyDatXe.Controllers
         [HttpPost]
         public async Task<IActionResult> ConfirmBooking(int tripId, int selectedSeat)
         {
-            // Lấy ID khách hàng từ session hoặc User.Identity
             var user = await _context.Users.FirstOrDefaultAsync(u => u.ten == User.Identity.Name);
             var customer = await _context.Customers.FirstOrDefaultAsync(c => c.UserId == user.id);
+            //if (user == null)
+            //{
+            //    return RedirectToAction("Login", "Account");
+            //}
+            if (customer == null) {
+                return NotFound("Không tìm thấy thông tin khách hàng.");
+            }
+
+            var trip = await _context.Trips
+                .Include(t => t.Tickets)
+                .FirstOrDefaultAsync(t => t.id == tripId);
+
+            if (trip == null)
+            {
+                return NotFound("Chuyến đi không tồn tại.");
+            }
+
+            if (trip.sogheconTrong <= 0)
+            {
+                return BadRequest("Không còn ghế trống.");
+            }
+
+            bool isSeatTaken = trip.Tickets.Any(t => t.soGhe == selectedSeat);
+            if (isSeatTaken)
+            {
+                return BadRequest("Ghế đã được đặt, vui lòng chọn ghế khác.");
+            }
 
             // Tạo mã vé
             string code = $"VE-{DateTime.Now:yyyyMMddHHmmss}-{Guid.NewGuid().ToString().Substring(0, 6).ToUpper()}";
@@ -61,9 +88,6 @@ namespace PBL3_QuanLyDatXe.Controllers
             };
 
             _context.Tickets.Add(ticket);
-
-            
-            var trip = await _context.Trips.FindAsync(tripId);
             trip.sogheconTrong -= 1;
 
             await _context.SaveChangesAsync();
