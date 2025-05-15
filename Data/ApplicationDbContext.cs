@@ -11,7 +11,6 @@ namespace PBL3_QuanLyDatXe.Data
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Account> Accounts { get; set; }
         public DbSet<Line> Lines { get; set; }
-
         public DbSet<Ticket> Tickets { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

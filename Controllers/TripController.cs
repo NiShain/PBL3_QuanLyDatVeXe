@@ -14,76 +14,12 @@ namespace PBL3_QuanLyDatXe.Controllers
         {
             _context = context;
         }
-        //public IActionResult Index()
-        //{
-        //    return View();
-        //}
-        //public IActionResult Create()
-        //{
-        //    ViewData["Routeid"] = new SelectList(_context.Lines, "id", "id");
-        //    return View();
-        //}
-        //[HttpPost]
-        //public IActionResult Create(Trip trip)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        _context.Trips.Add(trip);
-        //        _context.SaveChanges();
-        //        return RedirectToAction("Index");
-        //    }
-        //    ViewData["Routeid"] = new SelectList(_context.Lines, "id", "id", trip.Routeid);
-        //    return View(trip);
-        //}
-        //public IActionResult Edit(int id)
-        //{
-        //    var trip = _context.Trips.Find(id);
-        //    if (trip == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    return View(trip);
-        //}
-        //[HttpPost]
-        //public IActionResult Edit(Trip trip)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        _context.Entry(trip).State = EntityState.Modified;
-        //        _context.SaveChanges();
-        //        return RedirectToAction("Index");
-        //    }
-        //    return View(trip);
-        //}
-        //public IActionResult Delete(int id)
-        //{
-        //    var trip = _context.Trips.Find(id);
-        //    if (trip == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    return View(trip);
-        //}
-        //[HttpPost]
-        //public IActionResult DeleteConfirmed(int id)
-        //{
-        //    var trip = _context.Trips.Find(id);
-        //    if (trip == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    _context.Trips.Remove(trip);
-        //    _context.SaveChanges();
-        //    return RedirectToAction("Index");
-
-        //}
         public async Task<IActionResult> Index()
         {
             var trips = await _context.Trips.Include(t => t.Route).ToListAsync();
             return View(trips);
         }
 
-        // GET: Trip/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null) return NotFound();
@@ -96,23 +32,35 @@ namespace PBL3_QuanLyDatXe.Controllers
             return View(trip);
         }
 
-        // GET: Trip/Create
         public IActionResult Create()
         {
+            ViewData["Busid"] = new SelectList(_context.Buses, "id", "tenXe");
             ViewData["Routeid"] = new SelectList(_context.Lines, "id", "tenTuyen");
             return View();
         }
 
-        // POST: Trip/Create
         [HttpPost]
         public async Task<IActionResult> Create(Trip trip)
         {
             if (ModelState.IsValid)
             {
+                var bus = await _context.Buses.FindAsync(trip.Busid);
+                if (bus == null)
+                {
+                    ModelState.AddModelError("", "Không tìm thấy xe.");
+                    ViewData["Busid"] = new SelectList(_context.Buses, "id", "tenXe", trip.Busid);
+                    ViewData["Routeid"] = new SelectList(_context.Lines, "id", "tenTuyen", trip.Routeid);
+                    return View(trip);
+                }
+
+                // Gán số ghế từ bus cho trip
+                trip.soGhe = bus.soGhe;
+                trip.sogheconTrong = bus.soGhe;
                 _context.Add(trip);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["Busid"] = new SelectList(_context.Buses, "id", "tenXe", trip.Busid);
             ViewData["Routeid"] = new SelectList(_context.Lines, "id", "tenTuyen", trip.Routeid);
             return View(trip);
         }

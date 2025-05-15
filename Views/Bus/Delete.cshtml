@@ -1,0 +1,23 @@
+﻿@model PBL3_QuanLyDatXe.Models.Bus
+
+@{
+	ViewData["Title"] = "Delete";
+}
+
+<h2 class="text-danger text-center mb-4">Xác nhận xóa xe khách</h2>
+
+<div class="container col-md-6">
+	<div class="alert alert-danger">
+		<p>Bạn có chắc chắn muốn xóa xe khách này không?</p>
+		<p><strong>Biển số xe:</strong> @Model.bienSo</p>
+		<p><strong>Loại xe:</strong> @Model.loaiXe</p>
+		<p><strong>Số ghế:</strong> @Model.soGhe</p>
+	</div>
+	<form asp-action="DeleteConfirmed" method="post">
+		<input type="hidden" asp-for="id" />
+		<div class="form-group">
+			<button type="submit" class="btn btn-danger">Xóa</button>
+			<a asp-action="Index" class="btn btn-secondary">Hủy</a>
+		</div>
+	</form>
+</div>

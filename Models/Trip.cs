@@ -11,6 +11,10 @@ namespace PBL3_QuanLyDatXe.Models
         public Line Route { get; set; }
 
 
+        public int Busid { get; set; }
+        public Bus Bus { get; set; }
+
+
         public DateTime ngayDi { get; set; }
         public DateTime gioDi { get; set; }
 

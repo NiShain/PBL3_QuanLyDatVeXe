@@ -1,4 +1,4 @@
-﻿@model IEnumerable<PBL3_QuanLyDatXe.Models.Bus>
+﻿@model IEnumerable<PBL3_QuanLyDatXe.Models.Line>
 
 @{
     ViewData["Title"] = "Danh sách xe";
@@ -11,23 +11,20 @@
 <table class="table">
     <thead>
         <tr>
-            <th>Tên xe</th>
-            <th>Biển số</th>
-            <th>Số ghế</th>
-            <th>Loại xe</th>
-            <th>Hành động</th>
+            <th>Tên tuyến</th>
+            <th>Điểm đi</th>
+            <th>Điểm đến</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
             <tr>
-                <td>@item.tenXe</td>
-                <td>@item.bienSo</td>
-                <td>@item.soGhe</td>
-                <td>@item.loaiXe</td>
+                <td>@item.tenTuyen</td>
+                <td>@item.diemDi</td>
+                <td>@item.diemDen</td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.id" class="btn btn-warning">Sửa</a>
+                    @*<a asp-action="Edit" asp-route-id="@item.id" class="btn btn-warning">Sửa</a>*@
                     <a asp-action="Delete" asp-route-id="@item.id" class="btn btn-danger">Xoá</a>
                 </td>
             </tr>

@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PBL3_QuanLyDatXe.Data;
 using PBL3_QuanLyDatXe.Models;
+using PBL3_QuanLyDatXe.ViewModels;
 
 namespace PBL3_QuanLyDatXe.Controllers
 {
@@ -12,20 +14,27 @@ namespace PBL3_QuanLyDatXe.Controllers
         {
             _context = context;
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var lines = await _context.Lines.ToListAsync();
+            return View(lines);
         }
         public IActionResult Create()
         {
             return View();
         }
         [HttpPost]
-        public IActionResult Create(Line line)
+        public IActionResult Create(LineViewModels line)
         {
             if (ModelState.IsValid)
             {
-                _context.Lines.Add(line);
+                var lines = new Line
+                {
+                    tenTuyen = line.tenTuyen,
+                    diemDi = line.diemDi,
+                    diemDen = line.diemDen,
+                };
+                _context.Lines.Add(lines);
                 _context.SaveChanges();
                 return RedirectToAction("Index");
             }
@@ -33,7 +42,7 @@ namespace PBL3_QuanLyDatXe.Controllers
         }
         public IActionResult Edit(int id)
         {
-            var line = _context.Lines.Find(id);
+            var line = _context.Lines.FirstOrDefaultAsync(x => x.id == id);
             if (line == null)
             {
                 return NotFound();
@@ -45,11 +54,32 @@ namespace PBL3_QuanLyDatXe.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Entry(line).State = EntityState.Modified;
+                _context.Update(line);
                 _context.SaveChanges();
                 return RedirectToAction("Index");
             }
             return View(line);
+        }
+        public async Task<IActionResult> Delete(int id)
+        {
+            var line = await _context.Lines.FirstOrDefaultAsync(x => x.id == id);
+            if (line == null)
+            {
+                return NotFound();
+            }
+            return View(line);
+        }
+        [HttpPost]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var line = await _context.Lines.FirstOrDefaultAsync(x => x.id == id);
+            if (line != null)
+            {
+                _context.Lines.Remove(line);
+                _context.SaveChanges();
+            }
+
+            return RedirectToAction("Index");
         }
     }
 }

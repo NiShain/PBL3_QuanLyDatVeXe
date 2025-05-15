@@ -1,0 +1,23 @@
+﻿@model PBL3_QuanLyDatXe.ViewModels.LineViewModels
+
+@{
+    ViewData["Title"] = "Thêm tuyến mới";
+}
+
+<h2>Thêm tuyến mới</h2>
+
+<form asp-action="Create" method="post">
+    <div class="form-group">
+        <label asp-for="tenTuyen"></label>
+        <input asp-for="tenTuyen" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="diemDi"></label>
+        <input asp-for="diemDi" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="diemDen"></label>
+        <input asp-for="diemDen" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-primary">Lưu</button>
+</form>

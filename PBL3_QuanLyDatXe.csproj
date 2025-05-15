@@ -23,9 +23,6 @@
 
   <ItemGroup>
     <Folder Include="Views\Customer\" />
-    <Folder Include="Views\Ticket\" />
-    <Folder Include="Views\Trip\" />
-    <Folder Include="Views\Route\" />
   </ItemGroup>
 
   <ItemGroup>
