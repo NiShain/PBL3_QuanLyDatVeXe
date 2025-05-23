@@ -1,4 +1,4 @@
-﻿@model PBL3_QuanLyDatXe.Models.Trip
+﻿@model PBL3_QuanLyDatXe.ViewModels.TripViewModels
 
 @{
     ViewData["Title"] = "Thêm chuyến xe mới";
@@ -8,6 +8,7 @@
 
 <div class="container col-md-6">
     <form asp-action="Create" method="post">
+        @Html.AntiForgeryToken()
 
         <div class="form-group mb-3">
             <label asp-for="Routeid">Tuyến</label>
@@ -34,20 +35,16 @@
         </div>
 
         <div class="form-group mb-3">
-            <input type="hidden" asp-for="soGhe" class="form-control" readonly />
-        </div>
-
-        <div class="form-group mb-3">
-            <input type="hidden" asp-for="sogheconTrong" class="form-control" readonly />
-        </div>
-
-        <div class="form-group mb-3">
             <label asp-for="giaVe">Giá vé</label>
             <input asp-for="giaVe" class="form-control" type="number" step="1000" />
             <span asp-validation-for="giaVe" class="text-danger"></span>
         </div>
 
-        <button type="submit" class="btn btn-primary w-100">Thêm chuyến</button>
+        <!-- Hidden fields -->
+        <input type="hidden" asp-for="soGhe" />
+        <input type="hidden" asp-for="sogheconTrong" />
+
+        <button type="submit" class="btn btn-primary w-100">Tạo chuyến</button>
     </form>
 </div>
 

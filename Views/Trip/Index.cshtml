@@ -1,0 +1,42 @@
+﻿@model IEnumerable<PBL3_QuanLyDatXe.Models.Trip>
+
+@{
+    ViewData["Title"] = "Danh sách chuyến xe";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<a asp-action="Create" class="btn btn-success mb-3">+ Thêm chuyến mới</a>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Tuyến</th>
+            <th>Xe</th>
+            <th>Ngày đi</th>
+            <th>Giờ đi</th>
+            <th>Giá vé</th>
+            <th>Số ghế</th>
+            <th>Còn trống</th>
+            <th>Hành động</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Route?.tenTuyen</td>
+                <td>@item.Bus?.tenXe</td>
+                <td>@item.ngayDi.ToShortDateString()</td>
+                <td>@item.gioDi.ToString(@"hh\:mm")</td>
+                <td>@item.giaVe.ToString("N0")</td>
+                <td>@item.soGhe</td>
+                <td>@item.sogheconTrong</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.id" class="btn btn-warning btn-sm">Sửa</a>
+                    <a asp-action="Delete" asp-route-id="@item.id" class="btn btn-danger btn-sm">Xoá</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

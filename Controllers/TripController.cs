@@ -16,7 +16,10 @@ namespace PBL3_QuanLyDatXe.Controllers
         }
         public async Task<IActionResult> Index()
         {
-            var trips = await _context.Trips.Include(t => t.Route).ToListAsync();
+            var trips = _context.Trips
+                .Include(t => t.Route)
+                .Include(t => t.Bus)
+                .ToList();
             return View(trips);
         }
 
@@ -40,29 +43,98 @@ namespace PBL3_QuanLyDatXe.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(Trip trip)
+        public async Task<IActionResult> Create(TripViewModels trip)
         {
+            var bus = await _context.Buses.FindAsync(trip.Busid);
+            var line = await _context.Lines.FindAsync(trip.Routeid);
+
+            if (bus == null)
+                ModelState.AddModelError("", "Không tìm thấy xe.");
+            if (line == null)
+                ModelState.AddModelError("", "Không tìm thấy tuyến.");
+            if (trip.ngayDi.Date < DateTime.Today)
+                ModelState.AddModelError("", "Ngày đi không được nhỏ hơn hôm nay.");
+
+            // ❗ Nếu có lỗi thì return ngay
+            if (!ModelState.IsValid)
+            {
+                ViewData["Busid"] = new SelectList(_context.Buses, "id", "tenXe", trip.Busid);
+                ViewData["Routeid"] = new SelectList(_context.Lines, "id", "tenTuyen", trip.Routeid);
+                return View(trip);
+            }
+
+            var trips = new Trip
+            {
+                Busid = trip.Busid,
+                Routeid = trip.Routeid,
+                ngayDi = trip.ngayDi,
+                gioDi = trip.gioDi,
+                giaVe = trip.giaVe,
+                soGhe = bus.soGhe,
+                sogheconTrong = bus.soGhe
+            };
+
+            _context.Add(trips);
+            await _context.SaveChangesAsync();
+
+            // ❗ Lỗi ở đây: Bạn đang gọi RedirectToAction("Trip", "Index") → sai
+            // Phải là RedirectToAction("Index")
+            return RedirectToAction("Index");
+        }
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null) return NotFound();
+            var trip = await _context.Trips.FindAsync(id);
+            if (trip == null) return NotFound();
+            ViewData["Busid"] = new SelectList(_context.Buses, "id", "tenXe", trip.Busid);
+            ViewData["Routeid"] = new SelectList(_context.Lines, "id", "tenTuyen", trip.Routeid);
+            return View(trip);
+        }
+        [HttpPost]
+        public async Task<IActionResult> Edit(int id, Trip trip)
+        {
+            if (id != trip.id) return NotFound();
             if (ModelState.IsValid)
             {
-                var bus = await _context.Buses.FindAsync(trip.Busid);
-                if (bus == null)
+                try
                 {
-                    ModelState.AddModelError("", "Không tìm thấy xe.");
-                    ViewData["Busid"] = new SelectList(_context.Buses, "id", "tenXe", trip.Busid);
-                    ViewData["Routeid"] = new SelectList(_context.Lines, "id", "tenTuyen", trip.Routeid);
-                    return View(trip);
+                    _context.Update(trip);
+                    await _context.SaveChangesAsync();
                 }
-
-                // Gán số ghế từ bus cho trip
-                trip.soGhe = bus.soGhe;
-                trip.sogheconTrong = bus.soGhe;
-                _context.Add(trip);
-                await _context.SaveChangesAsync();
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!TripExists(trip.id)) return NotFound();
+                    else throw;
+                }
                 return RedirectToAction(nameof(Index));
             }
             ViewData["Busid"] = new SelectList(_context.Buses, "id", "tenXe", trip.Busid);
             ViewData["Routeid"] = new SelectList(_context.Lines, "id", "tenTuyen", trip.Routeid);
             return View(trip);
+        }
+        private bool TripExists(int id)
+        {
+            throw new NotImplementedException();
+        }
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null) return NotFound();
+            var trip = await _context.Trips
+                            .Include(t => t.Route)
+                            .FirstOrDefaultAsync(m => m.id == id);
+            if (trip == null) return NotFound();
+            return View(trip);
+        }
+        [HttpPost, ActionName("Delete")]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var trip = await _context.Trips.FindAsync(id);
+            if (trip != null)
+            {
+                _context.Trips.Remove(trip);
+                await _context.SaveChangesAsync();
+            }
+            return RedirectToAction(nameof(Index));
         }
     }
 }
