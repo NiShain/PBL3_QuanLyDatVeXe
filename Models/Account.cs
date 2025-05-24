@@ -5,7 +5,7 @@ namespace PBL3_QuanLyDatXe.Models
     public class Account
     {
         [Key]
-        public int id { get; set; }
+        public int Id { get; set; }
 
         [Required]
         public string ten { get; set; }

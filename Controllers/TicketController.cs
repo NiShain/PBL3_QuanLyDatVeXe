@@ -29,10 +29,10 @@ namespace PBL3_QuanLyDatXe.Controllers
             var user = await _context.Users.FirstOrDefaultAsync(u => u.ten == User.Identity.Name);
             if (user == null) return Unauthorized();
 
-            var customer = await _context.Customers.FirstOrDefaultAsync(c => c.UserId == user.id);
+            var customer = await _context.Customers.FirstOrDefaultAsync(c => c.UserId == user.Id);
             if (customer == null) return NotFound("Không tìm thấy khách hàng.");
 
-            var trip = await _context.Trips.FirstOrDefaultAsync(t => t.id == tripId);
+            var trip = await _context.Trips.FirstOrDefaultAsync(t => t.Id == tripId);
             if (trip == null || trip.sogheconTrong <= 0)
                 return BadRequest("Chuyến đi không hợp lệ hoặc đã hết chỗ.");
 
@@ -44,8 +44,8 @@ namespace PBL3_QuanLyDatXe.Controllers
             var ticket = new Ticket
             {
                 Code = code,
-                Customerid = customer.id,
-                Tripid = trip.id,
+                Customerid = customer.Id,
+                Tripid = trip.Id,
                 soGhe = seatNumber,
                 ngayDat = DateTime.Now,
                 trangThai = "Chưa thanh toán"
@@ -61,15 +61,19 @@ namespace PBL3_QuanLyDatXe.Controllers
         public async Task<IActionResult> Details()
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.ten == User.Identity.Name);
-            var customer = await _context.Customers.FirstOrDefaultAsync(c => c.UserId == user.id);
+            var customer = await _context.Customers.FirstOrDefaultAsync(c => c.UserId == user.Id);
 
-            var tickets = await _context.Tickets
-                .Include(t => t.Trip)
-                .Include(t => t.Trip.Route)
-                .Where(t => t.Customerid == customer.id)
-                .ToListAsync();
+            if (customer != null)
+            {
+                var tickets = await _context.Tickets
+                    .Include(t => t.Trip)
+                    .Include(t => t.Trip.Route)
+                    .Where(t => t.Customerid == customer.Id).ToListAsync();
 
-            return View(tickets);
+                return View(tickets);
+            }
+
+            return NotFound("Không tìm thấy khách hàng.");
         }
     }
 }

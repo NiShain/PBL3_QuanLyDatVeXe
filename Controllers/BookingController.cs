@@ -34,8 +34,12 @@ namespace PBL3_QuanLyDatXe.Controllers
 
         public IActionResult SelectSeat(int tripId)
         {
-            var trip = _context.Trips.Include(t => t.Tickets).FirstOrDefault(t => t.id == tripId);
-            var bookedSeats = trip.Tickets.Select(t => t.soGhe).ToList();
+            var trip = _context.Trips.Include(t => t.Tickets).FirstOrDefault(t => t.Id == tripId);
+            if (trip == null)
+            {
+                return NotFound("Chuyến đi không tồn tại.");
+            }
+            var bookedSeats = trip.Tickets?.Select(t => t.soGhe).ToList() ?? new List<int>();
             ViewBag.TripId = tripId;
             ViewBag.BookedSeats = bookedSeats;
             return View();
@@ -44,19 +48,26 @@ namespace PBL3_QuanLyDatXe.Controllers
         [HttpPost]
         public async Task<IActionResult> ConfirmBooking(int tripId, int selectedSeat)
         {
+            if (User.Identity == null || string.IsNullOrEmpty(User.Identity.Name))
+            {
+                return Unauthorized("Người dùng chưa đăng nhập.");
+            }
+
             var user = await _context.Users.FirstOrDefaultAsync(u => u.ten == User.Identity.Name);
-            var customer = await _context.Customers.FirstOrDefaultAsync(c => c.UserId == user.id);
-            //if (user == null)
-            //{
-            //    return RedirectToAction("Login", "Account");
-            //}
+            if (user == null)
+            {
+                return NotFound("Không tìm thấy thông tin người dùng.");
+            }
+
+            var customer = await _context.Customers.FirstOrDefaultAsync(c => c.UserId == user.Id);
+
             if (customer == null) {
                 return NotFound("Không tìm thấy thông tin khách hàng.");
             }
 
             var trip = await _context.Trips
                 .Include(t => t.Tickets)
-                .FirstOrDefaultAsync(t => t.id == tripId);
+                .FirstOrDefaultAsync(t => t.Id == tripId);
 
             if (trip == null)
             {
@@ -68,7 +79,7 @@ namespace PBL3_QuanLyDatXe.Controllers
                 return BadRequest("Không còn ghế trống.");
             }
 
-            bool isSeatTaken = trip.Tickets.Any(t => t.soGhe == selectedSeat);
+            bool isSeatTaken = (trip.Tickets?.Any(t => t.soGhe == selectedSeat)) ?? false;
             if (isSeatTaken)
             {
                 return BadRequest("Ghế đã được đặt, vui lòng chọn ghế khác.");
@@ -80,7 +91,7 @@ namespace PBL3_QuanLyDatXe.Controllers
             var ticket = new Ticket
             {
                 Tripid = tripId,
-                Customerid = customer.id,
+                Customerid = customer.Id,
                 soGhe = selectedSeat,
                 ngayDat = DateTime.Now,
                 trangThai = "Chưa thanh toán",

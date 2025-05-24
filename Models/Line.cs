@@ -2,7 +2,7 @@
 {
     public class Line
     {
-        public int id { get; set; }
+        public int Id { get; set; }
         public string tenTuyen { get; set; }
         public string diemDi { get; set; }
         public string diemDen { get; set; }

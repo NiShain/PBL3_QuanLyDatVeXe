@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PBL3_QuanLyDatXe.Models;
 using PBL3_QuanLyDatXe.ViewModels;
@@ -16,10 +16,10 @@ namespace PBL3_QuanLyDatXe.Controllers
         }
         public async Task<IActionResult> Index()
         {
-            var trips = _context.Trips
+            var trips = await _context.Trips
                 .Include(t => t.Route)
                 .Include(t => t.Bus)
-                .ToList();
+                .ToListAsync();
             return View(trips);
         }
 
@@ -55,7 +55,6 @@ namespace PBL3_QuanLyDatXe.Controllers
             if (trip.ngayDi.Date < DateTime.Today)
                 ModelState.AddModelError("", "Ngày đi không được nhỏ hơn hôm nay.");
 
-            // ❗ Nếu có lỗi thì return ngay
             if (!ModelState.IsValid)
             {
                 ViewData["Busid"] = new SelectList(_context.Buses, "id", "tenXe", trip.Busid);
@@ -77,8 +76,6 @@ namespace PBL3_QuanLyDatXe.Controllers
             _context.Add(trips);
             await _context.SaveChangesAsync();
 
-            // ❗ Lỗi ở đây: Bạn đang gọi RedirectToAction("Trip", "Index") → sai
-            // Phải là RedirectToAction("Index")
             return RedirectToAction("Index");
         }
         public async Task<IActionResult> Edit(int? id)
@@ -114,7 +111,7 @@ namespace PBL3_QuanLyDatXe.Controllers
         }
         private bool TripExists(int id)
         {
-            throw new NotImplementedException();
+            return _context.Trips.Any(e => e.id == id);
         }
         public async Task<IActionResult> Delete(int? id)
         {

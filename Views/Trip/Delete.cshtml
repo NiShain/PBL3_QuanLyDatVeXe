@@ -1,0 +1,24 @@
+﻿@model PBL3_QuanLyDatXe.Models.Trip
+
+@{
+    ViewData["Title"] = "Xoá chuyến xe";
+}
+
+<h2>Bạn có chắc chắn muốn xoá chuyến xe này không?</h2>
+
+<div>
+    <h4>@Model.Route?.tenTuyen - Ngày: @Model.ngayDi.ToShortDateString()</h4>
+    <dl class="row">
+        <dt class="col-sm-2">Xe</dt>
+        <dd class="col-sm-10">@Model.Busid</dd>
+
+        <dt class="col-sm-2">Giá vé</dt>
+        <dd class="col-sm-10">@Model.giaVe</dd>
+    </dl>
+</div>
+
+<form asp-action="DeleteConfirmed">
+    <input type="hidden" asp-for="id" />
+    <button type="submit" class="btn btn-danger">Xoá</button>
+    <a asp-action="Index" class="btn btn-secondary">Hủy</a>
+</form>

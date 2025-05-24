@@ -44,7 +44,7 @@ namespace PBL3_QuanLyDatXe.Controllers
         }
         public async Task<IActionResult> Edit(int id)
         {
-            var bus = await _context.Buses.FirstOrDefaultAsync(x => x.id == id);
+            var bus = await _context.Buses.FirstOrDefaultAsync(x => x.Id == id);
             if (bus == null)
             {
                 return NotFound();
@@ -66,7 +66,7 @@ namespace PBL3_QuanLyDatXe.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             
-            var bus = await _context.Buses.FirstOrDefaultAsync(x => x.id == id);
+            var bus = await _context.Buses.FirstOrDefaultAsync(x => x.Id == id);
             if (bus == null)
             {
                 return NotFound();
@@ -77,7 +77,7 @@ namespace PBL3_QuanLyDatXe.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
            
-            var bus = await _context.Buses.FirstOrDefaultAsync(x => x.id == id);
+            var bus = await _context.Buses.FirstOrDefaultAsync(x => x.Id == id);
             if (bus != null)
             {
                 _context.Buses.Remove(bus);

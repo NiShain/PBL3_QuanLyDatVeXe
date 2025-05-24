@@ -1,110 +1,109 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using PBL3_QuanLyDatXe.Models;
-using PBL3_QuanLyDatXe.ViewModels;
+using PBL3_QuanLyDatXe.ViewModels; 
 using PBL3_QuanLyDatXe.Data;
+
 namespace PBL3_QuanLyDatXe.Controllers
 {
     public class CustomerController : Controller
     {
         private readonly ApplicationDbContext _context;
+
         public CustomerController(ApplicationDbContext context)
         {
             _context = context;
         }
-        private bool IsAdmin()
+
+        public async Task<IActionResult> Index()
         {
-            var role = HttpContext.Session.GetString("role");
-            return role == "Admin";
+            var customers = await _context.Customers.ToListAsync();
+            return View(customers);
         }
-        public IActionResult Index()
-        {
-            return View();
-        }
+
         public IActionResult Create()
         {
             return View();
         }
+
         [HttpPost]
-        public async Task<IActionResult> Create(CustomerViewModels customer)
+        public async Task<IActionResult> Create(CustomerViewModel customerViewModel)
         {
             if (ModelState.IsValid)
             {
-                var account = new Account
+                var customer = new Customer
                 {
-                    ten = customer.CCCD,
-                    password = customer.sodienthoai,
-                    role = "Customer"
+                    Name = customerViewModel.Name,
+                    Email = customerViewModel.Email,
+                    Phone = customerViewModel.Phone
                 };
 
-                await _context.Accounts.AddAsync(account);
+                _context.Add(customer);
                 await _context.SaveChangesAsync();
-
-                var Customer = new Customer
-                {
-                    hoten = customer.hoten,
-                    sodienthoai = customer.sodienthoai,
-                    email = customer.email,
-                    CCCD = customer.CCCD,
-                    UserId = account.id
-                };
-                await _context.Customers.AddAsync(Customer);
-                await _context.SaveChangesAsync();
-                return RedirectToAction("Index");
+                return RedirectToAction(nameof(Index));
             }
-            return View(customer);
+            return View(customerViewModel);
         }
-        public async Task<IActionResult> Edit(int id)
+
+        public async Task<IActionResult> Edit(int? id)
         {
+            if (id == null) return NotFound();
+
             var customer = await _context.Customers.FindAsync(id);
-            if (customer == null)
+            if (customer == null) return NotFound();
+
+            var customerViewModel = new CustomerViewModel
             {
-                return NotFound();
-            }
-            return View(customer);
+                Id = customer.Id,
+                Name = customer.Name,
+                Email = customer.Email,
+                Phone = customer.Phone
+            };
+
+            return View(customerViewModel);
         }
+
         [HttpPost]
-        public async Task<IActionResult> Edit(Customer customer)
+        public async Task<IActionResult> Edit(int id, CustomerViewModel customerViewModel)
         {
-            if (IsAdmin())
-            {
-                TempData["Error"] = "ADMIN không được phép can thiệp vào thông tin của khách hàng";
-                return RedirectToAction("Index");
-            }
+            if (id != customerViewModel.Id) return NotFound();
+
             if (ModelState.IsValid)
             {
-                _context.Customers.Update(customer);
+                var customer = await _context.Customers.FindAsync(id);
+                if (customer == null) return NotFound();
+
+                customer.Name = customerViewModel.Name;
+                customer.Email = customerViewModel.Email;
+                customer.Phone = customerViewModel.Phone;
+
+                _context.Update(customer);
                 await _context.SaveChangesAsync();
-                return RedirectToAction("Index");
+                return RedirectToAction(nameof(Index));
             }
-            return View(customer);
+            return View(customerViewModel);
         }
-        public async Task<IActionResult> Delete(int id)
+
+        public async Task<IActionResult> Delete(int? id)
         {
-            if (!IsAdmin())
-            {
-                return RedirectToAction("#", "#");
-            }
+            if (id == null) return NotFound();
+
             var customer = await _context.Customers.FindAsync(id);
-            if (customer == null)
-            {
-                return NotFound();
-            }
+            if (customer == null) return NotFound();
+
             return View(customer);
         }
-        [HttpPost]
+
+        [HttpPost, ActionName("Delete")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (!IsAdmin())
-            {
-                return RedirectToAction("#", "#");
-            }
             var customer = await _context.Customers.FindAsync(id);
             if (customer != null)
             {
                 _context.Customers.Remove(customer);
                 await _context.SaveChangesAsync();
             }
-            return RedirectToAction("Index");
+            return RedirectToAction(nameof(Index));
         }
     }
 }

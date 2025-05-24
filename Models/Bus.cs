@@ -5,7 +5,7 @@ namespace PBL3_QuanLyDatXe.Models
     public class Bus
     {
         [Key]
-        public int id { get; set; }
+        public int Id { get; set; }
         [Required]
         public string tenXe { get; set; }
         [Required]
