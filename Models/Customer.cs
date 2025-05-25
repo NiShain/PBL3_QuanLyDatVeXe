@@ -6,7 +6,7 @@ namespace PBL3_QuanLyDatXe.Models
     public class Customer
     {
         [Key]
-        public int Id { get; set; }
+        public int id { get; set; }
         public string Name { get; set; }
         public string Phone { get; set; }
         public string Email { get; set; }

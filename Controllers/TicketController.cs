@@ -14,25 +14,31 @@ namespace PBL3_QuanLyDatXe.Controllers
         {
             _context = context;
         }
+
         public IActionResult Index()
         {
             return View();
-        }   
+        }
+
         public IActionResult Create()
         {
             return View();
         }
+
         [HttpPost]
         public async Task<IActionResult> Create(int tripId, int seatNumber)
         {
-            // Lấy người dùng hiện tại
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.ten == User.Identity.Name);
+            // Fix for CS1061: Use a property that exists in IdentityUser, such as UserName
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserName == User.Identity.Name);
             if (user == null) return Unauthorized();
 
-            var customer = await _context.Customers.FirstOrDefaultAsync(c => c.UserId == user.Id);
+            // Fix for CS8602: Add null checks to prevent dereferencing null values
+            // In Create action (POST)
+            var customer = await _context.Customers.FirstOrDefaultAsync(c => c.UserId.ToString() == user.Id);
+
             if (customer == null) return NotFound("Không tìm thấy khách hàng.");
 
-            var trip = await _context.Trips.FirstOrDefaultAsync(t => t.Id == tripId);
+            var trip = await _context.Trips.FirstOrDefaultAsync(t => t.id == tripId);
             if (trip == null || trip.sogheconTrong <= 0)
                 return BadRequest("Chuyến đi không hợp lệ hoặc đã hết chỗ.");
 
@@ -44,8 +50,8 @@ namespace PBL3_QuanLyDatXe.Controllers
             var ticket = new Ticket
             {
                 Code = code,
-                Customerid = customer.Id,
-                Tripid = trip.Id,
+                Customerid = customer.id,
+                Tripid = trip.id,
                 soGhe = seatNumber,
                 ngayDat = DateTime.Now,
                 trangThai = "Chưa thanh toán"
@@ -58,17 +64,21 @@ namespace PBL3_QuanLyDatXe.Controllers
 
             return Ok(new { success = true, code = code });
         }
+
         public async Task<IActionResult> Details()
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.ten == User.Identity.Name);
-            var customer = await _context.Customers.FirstOrDefaultAsync(c => c.UserId == user.Id);
+            // Fix for CS1061: Use a property that exists in IdentityUser, such as UserName
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserName == User.Identity.Name);
+            if (user == null) return Unauthorized();
 
+            // Fix for CS8602: Add null checks to prevent dereferencing null values
+            var customer = await _context.Customers.FirstOrDefaultAsync(c => c.UserId.ToString() == user.Id);
             if (customer != null)
             {
                 var tickets = await _context.Tickets
                     .Include(t => t.Trip)
                     .Include(t => t.Trip.Route)
-                    .Where(t => t.Customerid == customer.Id).ToListAsync();
+                    .Where(t => t.Customerid == customer.id).ToListAsync();
 
                 return View(tickets);
             }

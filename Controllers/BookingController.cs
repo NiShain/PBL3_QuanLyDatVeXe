@@ -34,7 +34,7 @@ namespace PBL3_QuanLyDatXe.Controllers
 
         public IActionResult SelectSeat(int tripId)
         {
-            var trip = _context.Trips.Include(t => t.Tickets).FirstOrDefault(t => t.Id == tripId);
+            var trip = _context.Trips.Include(t => t.Tickets).FirstOrDefault(t => t.id == tripId);
             if (trip == null)
             {
                 return NotFound("Chuyến đi không tồn tại.");
@@ -53,13 +53,13 @@ namespace PBL3_QuanLyDatXe.Controllers
                 return Unauthorized("Người dùng chưa đăng nhập.");
             }
 
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.ten == User.Identity.Name);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserName == User.Identity.Name);
             if (user == null)
             {
                 return NotFound("Không tìm thấy thông tin người dùng.");
             }
 
-            var customer = await _context.Customers.FirstOrDefaultAsync(c => c.UserId == user.Id);
+            var customer = await _context.Customers.FirstOrDefaultAsync(c => c.UserId == int.Parse(user.Id));
 
             if (customer == null) {
                 return NotFound("Không tìm thấy thông tin khách hàng.");
@@ -67,7 +67,7 @@ namespace PBL3_QuanLyDatXe.Controllers
 
             var trip = await _context.Trips
                 .Include(t => t.Tickets)
-                .FirstOrDefaultAsync(t => t.Id == tripId);
+                .FirstOrDefaultAsync(t => t.id == tripId);
 
             if (trip == null)
             {
@@ -91,7 +91,7 @@ namespace PBL3_QuanLyDatXe.Controllers
             var ticket = new Ticket
             {
                 Tripid = tripId,
-                Customerid = customer.Id,
+                Customerid = customer.id,
                 soGhe = selectedSeat,
                 ngayDat = DateTime.Now,
                 trangThai = "Chưa thanh toán",

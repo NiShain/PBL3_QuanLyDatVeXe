@@ -5,7 +5,7 @@ namespace PBL3_QuanLyDatXe.Models
     public class Trip
     {
         [Key]
-        public int Id { get; set; }
+        public int id { get; set; }
 
         public int Routeid { get; set; }
         public Line Route { get; set; }

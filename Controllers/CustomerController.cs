@@ -54,7 +54,7 @@ namespace PBL3_QuanLyDatXe.Controllers
 
             var customerViewModel = new CustomerViewModel
             {
-                Id = customer.Id,
+                Id = customer.id,
                 Name = customer.Name,
                 Email = customer.Email,
                 Phone = customer.Phone
