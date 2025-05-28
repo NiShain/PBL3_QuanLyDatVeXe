@@ -17,11 +17,7 @@ namespace PBL3_QuanLyDatXe.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var userid = HttpContext.Session.GetString("UserId");
-            if (userid == null)
-            {
-                return RedirectToAction("Login", "Account");
-            }
+
             var customers = await _context.Customers.ToListAsync();
             return View(customers);
         }

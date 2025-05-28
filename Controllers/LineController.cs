@@ -16,26 +16,22 @@ namespace PBL3_QuanLyDatXe.Controllers
         }
         public async Task<IActionResult> Index()
         {
-            var userid = HttpContext.Session.GetString("UserId");
-            if (userid == null)
-            {
-                return RedirectToAction("Login", "Account");
-            }
             var lines = await _context.Lines.ToListAsync();
             return View(lines);
         }
         public IActionResult Create()
         {
-            var userid = HttpContext.Session.GetString("UserId");
-            if (userid == null)
-            {
-                return RedirectToAction("Login", "Account");
-            }
+            
             return View();
         }
         [HttpPost]
         public IActionResult Create(LineViewModels line)
         {
+            var userid = HttpContext.Session.GetString("UserId");
+            if (userid == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
             if (ModelState.IsValid)
             {
                 var lines = new Line

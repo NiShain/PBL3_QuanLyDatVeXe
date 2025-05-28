@@ -16,11 +16,7 @@ namespace PBL3_QuanLyDatXe.Controllers
         }
         public async Task<IActionResult> Index()
         {
-            var userid = HttpContext.Session.GetString("UserId");
-            if (userid == null)
-            {
-                return RedirectToAction("Login", "Account");
-            }
+            
             var trips = await _context.Trips
                 .Include(t => t.Route)
                 .Include(t => t.Bus)
@@ -56,6 +52,10 @@ namespace PBL3_QuanLyDatXe.Controllers
         public async Task<IActionResult> Create(TripViewModels trip)
         {
             var userid = HttpContext.Session.GetString("UserId");
+            if (userid == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
             if (userid == null)
             {
                 return RedirectToAction("Login", "Account");
