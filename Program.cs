@@ -42,5 +42,20 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
-
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    // Kiểm tra nếu chưa có tài khoản admin thì tạo mới
+    if (!context.Accounts.Any(a => a.role == "Admin"))
+    {
+        var admin = new Account
+        {
+            ten = "admin",
+            password = "admin123", // Nên mã hóa mật khẩu trong thực tế
+            role = "Admin"
+        };
+        context.Accounts.Add(admin);
+        context.SaveChanges();
+    }
+}
 app.Run();

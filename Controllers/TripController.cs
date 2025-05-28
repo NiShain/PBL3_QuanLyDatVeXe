@@ -14,6 +14,11 @@ namespace PBL3_QuanLyDatXe.Controllers
         {
             _context = context;
         }
+        public bool IsAdmin()
+        {
+            var role = HttpContext.Session.GetString("Role");
+            return role == "Admin";
+        }
         public async Task<IActionResult> Index()
         {
             
@@ -51,15 +56,11 @@ namespace PBL3_QuanLyDatXe.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(TripViewModels trip)
         {
-            var userid = HttpContext.Session.GetString("UserId");
-            if (userid == null)
-            {
+            var userIdStr = HttpContext.Session.GetString("UserId");
+            if (string.IsNullOrEmpty(userIdStr))
                 return RedirectToAction("Login", "Account");
-            }
-            if (userid == null)
-            {
-                return RedirectToAction("Login", "Account");
-            }
+            if (!IsAdmin())
+                return RedirectToAction("Login", "AccessDenied");
             var bus = await _context.Buses.FindAsync(trip.Busid);
             var line = await _context.Lines.FindAsync(trip.Routeid);
 
@@ -105,6 +106,11 @@ namespace PBL3_QuanLyDatXe.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(int id, Trip trip)
         {
+            var userIdStr = HttpContext.Session.GetString("UserId");
+            if (string.IsNullOrEmpty(userIdStr))
+                return RedirectToAction("Login", "Account");
+            if (!IsAdmin())
+                return RedirectToAction("Login", "AccessDenied");
             if (id != trip.id) return NotFound();
             if (ModelState.IsValid)
             {
@@ -140,6 +146,11 @@ namespace PBL3_QuanLyDatXe.Controllers
         [HttpPost, ActionName("Delete")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            var userIdStr = HttpContext.Session.GetString("UserId");
+            if (string.IsNullOrEmpty(userIdStr))
+                return RedirectToAction("Login", "Account");
+            if (!IsAdmin())
+                return RedirectToAction("Login", "AccessDenied");
             var trip = await _context.Trips.FindAsync(id);
             if (trip != null)
             {

@@ -37,8 +37,10 @@ namespace PBL3_QuanLyDatXe.Controllers
             ViewBag.Error = "Sai tài khoản hoặc mật khẩu";
             return View();
         }
-
-
+        public IActionResult AccessDenied()
+        {
+            return View();
+        }
         public IActionResult Logout()
         {
             HttpContext.Session.Clear();

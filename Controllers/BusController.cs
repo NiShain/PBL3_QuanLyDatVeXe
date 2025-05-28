@@ -15,6 +15,13 @@ namespace PBL3_QuanLyDatXe.Controllers
         {
             _context = context;
         }
+        
+        public bool IsAdmin()
+        {
+            var role = HttpContext.Session.GetString("Role");
+            return role == "Admin";
+        }
+
         public async Task<IActionResult> Index()
         {
             var Buses = await _context.Buses.ToListAsync();
@@ -31,6 +38,8 @@ namespace PBL3_QuanLyDatXe.Controllers
             var userIdStr = HttpContext.Session.GetString("UserId");
             if (string.IsNullOrEmpty(userIdStr))
                 return RedirectToAction("Login", "Account");
+            if (!IsAdmin())
+                return RedirectToAction("Login", "AccessDenied");
             if (ModelState.IsValid)
             {
                 var Bus = new Bus

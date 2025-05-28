@@ -15,9 +15,15 @@ namespace PBL3_QuanLyDatXe.Controllers
             _context = context;
         }
 
+        public bool IsAdmin()
+        {
+            var role = HttpContext.Session.GetString("Role");
+            return role == "Admin";
+        }
         public async Task<IActionResult> Index()
         {
-
+            if (!IsAdmin())
+                return RedirectToAction("Login", "AccessDenied");
             var customers = await _context.Customers.ToListAsync();
             return View(customers);
         }

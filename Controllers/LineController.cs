@@ -14,6 +14,11 @@ namespace PBL3_QuanLyDatXe.Controllers
         {
             _context = context;
         }
+        public bool IsAdmin()
+        {
+            var role = HttpContext.Session.GetString("Role");
+            return role == "Admin";
+        }
         public async Task<IActionResult> Index()
         {
             var lines = await _context.Lines.ToListAsync();
@@ -27,11 +32,11 @@ namespace PBL3_QuanLyDatXe.Controllers
         [HttpPost]
         public IActionResult Create(LineViewModels line)
         {
-            var userid = HttpContext.Session.GetString("UserId");
-            if (userid == null)
-            {
+            var userIdStr = HttpContext.Session.GetString("UserId");
+            if (string.IsNullOrEmpty(userIdStr))
                 return RedirectToAction("Login", "Account");
-            }
+            if (!IsAdmin())
+                return RedirectToAction("Login", "AccessDenied");
             if (ModelState.IsValid)
             {
                 var lines = new Line
@@ -58,6 +63,11 @@ namespace PBL3_QuanLyDatXe.Controllers
         [HttpPost]
         public IActionResult Edit(Line line)
         {
+            var userIdStr = HttpContext.Session.GetString("UserId");
+            if (string.IsNullOrEmpty(userIdStr))
+                return RedirectToAction("Login", "Account");
+            if (!IsAdmin())
+                return RedirectToAction("Login", "AccessDenied");
             if (ModelState.IsValid)
             {
                 _context.Update(line);
@@ -78,6 +88,11 @@ namespace PBL3_QuanLyDatXe.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            var userIdStr = HttpContext.Session.GetString("UserId");
+            if (string.IsNullOrEmpty(userIdStr))
+                return RedirectToAction("Login", "Account");
+            if (!IsAdmin())
+                return RedirectToAction("Login", "AccessDenied");
             var line = await _context.Lines.FirstOrDefaultAsync(x => x.id == id);
             if (line != null)
             {

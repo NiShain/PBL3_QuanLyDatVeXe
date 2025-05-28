@@ -1,0 +1,11 @@
+﻿@{
+    ViewBag.Title = "Access Denied";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Access Denied</h2>
+<p>
+    You do not have permission to access this page.<br />
+    Please contact the administrator if you believe this is an error.
+</p>
+<a href="@Url.Action("Index", "Home")" class="btn btn-primary">Back to Home</a>
