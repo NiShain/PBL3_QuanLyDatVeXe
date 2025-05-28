@@ -43,11 +43,11 @@ namespace PBL3_QuanLyDatXe.Controllers
 
         public IActionResult Create()
         {
-            var userid = HttpContext.Session.GetString("UserId");
-            if (userid == null)
-            {
+            var userIdStr = HttpContext.Session.GetString("UserId");
+            if (string.IsNullOrEmpty(userIdStr))
                 return RedirectToAction("Login", "Account");
-            }
+            if (!IsAdmin())
+                return RedirectToAction("AccessDenied", "Account");
             ViewData["Busid"] = new SelectList(_context.Buses, "id", "tenXe");
             ViewData["Routeid"] = new SelectList(_context.Lines, "id", "tenTuyen");
             return View();
@@ -56,11 +56,6 @@ namespace PBL3_QuanLyDatXe.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(TripViewModels trip)
         {
-            var userIdStr = HttpContext.Session.GetString("UserId");
-            if (string.IsNullOrEmpty(userIdStr))
-                return RedirectToAction("Login", "Account");
-            if (!IsAdmin())
-                return RedirectToAction("Login", "AccessDenied");
             var bus = await _context.Buses.FindAsync(trip.Busid);
             var line = await _context.Lines.FindAsync(trip.Routeid);
 

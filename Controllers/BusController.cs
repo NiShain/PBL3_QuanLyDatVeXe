@@ -29,17 +29,17 @@ namespace PBL3_QuanLyDatXe.Controllers
         }
         public IActionResult Create()
         {
-
+            var userIdStr = HttpContext.Session.GetString("UserId");
+            if (string.IsNullOrEmpty(userIdStr))
+                return RedirectToAction("Login", "Account");
+            if (!IsAdmin())
+                return RedirectToAction("AccessDenied", "Account");
             return View();
         }
         [HttpPost]
         public async Task<IActionResult> Create(BusViewModels bus)
         {
-            var userIdStr = HttpContext.Session.GetString("UserId");
-            if (string.IsNullOrEmpty(userIdStr))
-                return RedirectToAction("Login", "Account");
-            if (!IsAdmin())
-                return RedirectToAction("Login", "AccessDenied");
+            
             if (ModelState.IsValid)
             {
                 var Bus = new Bus

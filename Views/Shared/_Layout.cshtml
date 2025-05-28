@@ -22,7 +22,7 @@
                     @{
                         var userId = Context.Session.GetString("UserId");
                     }
-                    @if (Context.Session.GetString("Role") == "customer")
+                    @if (Context.Session.GetString("Role") == "Admin")
                     {
                         <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-controller="Bus" asp-action="Index">Danh Sách xe</a>
