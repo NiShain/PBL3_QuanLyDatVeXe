@@ -2,12 +2,12 @@
 using Microsoft.EntityFrameworkCore;
 using PBL3_QuanLyDatXe.Data;
 using PBL3_QuanLyDatXe.Models;
+using PBL3_QuanLyDatXe.ViewModels;
 
 namespace PBL3_QuanLyDatXe.Controllers
 {
     public class BookingController : Controller
     {
-        
         private readonly ApplicationDbContext _context;
 
         public BookingController(ApplicationDbContext context)
@@ -32,41 +32,39 @@ namespace PBL3_QuanLyDatXe.Controllers
             return View(trips);
         }
 
-        public IActionResult SelectSeat(int tripId)
+        // Chọn số lượng ghế muốn đặt
+        public IActionResult SelectQuantity(int tripId)
         {
-            var trip = _context.Trips.Include(t => t.Tickets).FirstOrDefault(t => t.id == tripId);
+            var trip = _context.Trips.FirstOrDefault(t => t.id == tripId);
             if (trip == null)
             {
                 return NotFound("Chuyến đi không tồn tại.");
             }
-            var bookedSeats = trip.Tickets?.Select(t => t.soGhe).ToList() ?? new List<int>();
             ViewBag.TripId = tripId;
-            ViewBag.BookedSeats = bookedSeats;
+            ViewBag.SoGheConTrong = trip.sogheconTrong;
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> ConfirmBooking(int tripId, int selectedSeat)
+        public async Task<IActionResult> ConfirmBooking(int tripId, int soLuongGhe)
         {
-            if (User.Identity == null || string.IsNullOrEmpty(User.Identity.Name))
+            // Lấy UserId từ session
+            var userIdString = HttpContext.Session.GetString("UserId");
+            if (string.IsNullOrEmpty(userIdString) || !int.TryParse(userIdString, out int userId))
             {
                 return Unauthorized("Người dùng chưa đăng nhập.");
             }
 
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserName == User.Identity.Name);
-            if (user == null)
+            // Tìm customer theo UserId (Account.id)
+            var customer = await _context.Customers.FirstOrDefaultAsync(c => c.UserId == userId);
+            if (customer == null)
             {
-                return NotFound("Không tìm thấy thông tin người dùng.");
-            }
-
-            var customer = await _context.Customers.FirstOrDefaultAsync(c => c.UserId == int.Parse(user.Id));
-
-            if (customer == null) {
                 return NotFound("Không tìm thấy thông tin khách hàng.");
             }
 
             var trip = await _context.Trips
                 .Include(t => t.Tickets)
+                .Include(t => t.Route)
                 .FirstOrDefaultAsync(t => t.id == tripId);
 
             if (trip == null)
@@ -74,36 +72,55 @@ namespace PBL3_QuanLyDatXe.Controllers
                 return NotFound("Chuyến đi không tồn tại.");
             }
 
-            if (trip.sogheconTrong <= 0)
+            if (trip.sogheconTrong < soLuongGhe)
             {
-                return BadRequest("Không còn ghế trống.");
+                return BadRequest("Số lượng ghế trống không đủ.");
             }
 
-            bool isSeatTaken = (trip.Tickets?.Any(t => t.soGhe == selectedSeat)) ?? false;
-            if (isSeatTaken)
+            // Lấy danh sách ghế đã đặt
+            var bookedSeats = trip.Tickets?.Select(t => t.soGhe).ToList() ?? new List<int>();
+            var availableSeats = Enumerable.Range(1, trip.soGhe).Except(bookedSeats).Take(soLuongGhe).ToList();
+
+            if (availableSeats.Count < soLuongGhe)
             {
-                return BadRequest("Ghế đã được đặt, vui lòng chọn ghế khác.");
+                return BadRequest("Không đủ ghế trống.");
             }
 
-            // Tạo mã vé
-            string code = $"VE-{DateTime.Now:yyyyMMddHHmmss}-{Guid.NewGuid().ToString().Substring(0, 6).ToUpper()}";
+            var maCodeList = new List<string>();
+            var ngayDat = DateTime.Now;
 
-            var ticket = new Ticket
+            foreach (var seat in availableSeats)
             {
-                Tripid = tripId,
-                Customerid = customer.id,
-                soGhe = selectedSeat,
-                ngayDat = DateTime.Now,
-                trangThai = "Chưa thanh toán",
-                Code = code
-            };
+                string code = $"VE-{DateTime.Now:yyyyMMddHHmmss}-{Guid.NewGuid().ToString().Substring(0, 6).ToUpper()}";
+                var ticket = new Ticket
+                {
+                    Tripid = tripId,
+                    Customerid = customer.id,
+                    soGhe = seat,
+                    ngayDat = ngayDat,
+                    trangThai = "Chưa thanh toán",
+                    Code = code
+                };
+                _context.Tickets.Add(ticket);
+                maCodeList.Add(code);
+            }
 
-            _context.Tickets.Add(ticket);
-            trip.sogheconTrong -= 1;
-
+            trip.sogheconTrong -= soLuongGhe;
             await _context.SaveChangesAsync();
 
-            return RedirectToAction("Success");
+            // Tạo ViewModel hóa đơn
+            var invoice = new InvoiceViewModels
+            { 
+                tenKhachHang = customer.Name,
+                tenChuyenDi = trip.Route?.tenTuyen ?? "",
+                soGheDat = soLuongGhe,
+                ngayDat = ngayDat,
+                ngayDi = trip.ngayDi,
+                maCode = maCodeList,
+                tongTien = trip.giaVe * soLuongGhe
+            };
+
+            return View("Invoice", invoice);
         }
 
         public IActionResult Success()

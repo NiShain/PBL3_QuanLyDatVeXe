@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PBL3_QuanLyDatXe.Models;
 using PBL3_QuanLyDatXe.ViewModels; 
@@ -17,6 +17,11 @@ namespace PBL3_QuanLyDatXe.Controllers
 
         public async Task<IActionResult> Index()
         {
+            var userid = HttpContext.Session.GetString("UserId");
+            if (userid == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
             var customers = await _context.Customers.ToListAsync();
             return View(customers);
         }
@@ -27,22 +32,44 @@ namespace PBL3_QuanLyDatXe.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(CustomerViewModel customerViewModel)
+        public async Task<IActionResult> Create(CustomerViewModels customer)
         {
+
             if (ModelState.IsValid)
             {
-                var customer = new Customer
+                var existedCustomer = await _context.Customers
+                    .FirstOrDefaultAsync(c => c.CCCD == customer.CCCD || c.Email == customer.Email || c.Phone == customer.Phone);
+                if (existedCustomer != null)
                 {
-                    Name = customerViewModel.Name,
-                    Email = customerViewModel.Email,
-                    Phone = customerViewModel.Phone
+                    ModelState.AddModelError("", "Customer with the same CCCD, Email or Phone already exists.");
+                    return View(customer);
+                }
+
+                
+                var account = new Account
+                {
+                    ten = customer.Email,           
+                    password = customer.Phone,      
+                    role = "customer"
+                };
+                _context.Add(account);
+                await _context.SaveChangesAsync();
+
+                
+                var customers = new Customer
+                {
+                    Name = customer.Name,
+                    Email = customer.Email,
+                    Phone = customer.Phone,
+                    CCCD = customer.CCCD,
+                    UserId = account.id            
                 };
 
-                _context.Add(customer);
+                _context.Customers.Add(customers);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(customerViewModel);
+            return View(customer);
         }
 
         public async Task<IActionResult> Edit(int? id)
@@ -52,36 +79,31 @@ namespace PBL3_QuanLyDatXe.Controllers
             var customer = await _context.Customers.FindAsync(id);
             if (customer == null) return NotFound();
 
-            var customerViewModel = new CustomerViewModel
-            {
-                Id = customer.id,
-                Name = customer.Name,
-                Email = customer.Email,
-                Phone = customer.Phone
-            };
-
-            return View(customerViewModel);
+            return View(customer);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(int id, CustomerViewModel customerViewModel)
+        public async Task<IActionResult> Edit(int id)
         {
-            if (id != customerViewModel.Id) return NotFound();
-
-            if (ModelState.IsValid)
+            if (id == 0) return NotFound();
+            var customerToUpdate = await _context.Customers.FindAsync(id);
+            if (customerToUpdate == null) return NotFound();
+            if (await TryUpdateModelAsync<Customer>(
+                customerToUpdate,
+                "",
+                c => c.Name, c => c.Phone, c => c.Email, c => c.CCCD))
             {
-                var customer = await _context.Customers.FindAsync(id);
-                if (customer == null) return NotFound();
-
-                customer.Name = customerViewModel.Name;
-                customer.Email = customerViewModel.Email;
-                customer.Phone = customerViewModel.Phone;
-
-                _context.Update(customer);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (DbUpdateException)
+                {
+                    ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
+                }
             }
-            return View(customerViewModel);
+            return View(customerToUpdate);
         }
 
         public async Task<IActionResult> Delete(int? id)

@@ -3,7 +3,6 @@ using PBL3_QuanLyDatXe.Models;
 using PBL3_QuanLyDatXe.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace PBL3_QuanLyDatXe.Controllers
 {
@@ -28,17 +27,18 @@ namespace PBL3_QuanLyDatXe.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(int tripId, int seatNumber)
         {
-            // Fix for CS1061: Use a property that exists in IdentityUser, such as UserName
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserName == User.Identity.Name);
-            if (user == null) return Unauthorized();
+            // Lấy UserId từ session
+            var userIdString = HttpContext.Session.GetString("UserId");
+            if (string.IsNullOrEmpty(userIdString) || !int.TryParse(userIdString, out int userId))
+                return Unauthorized();
 
-            // Fix for CS8602: Add null checks to prevent dereferencing null values
-            // In Create action (POST)
-            var customer = await _context.Customers.FirstOrDefaultAsync(c => c.UserId.ToString() == user.Id);
-
+            // Tìm customer theo UserId (Account.id)
+            var customer = await _context.Customers.FirstOrDefaultAsync(c => c.UserId == userId);
             if (customer == null) return NotFound("Không tìm thấy khách hàng.");
 
-            var trip = await _context.Trips.FirstOrDefaultAsync(t => t.id == tripId);
+            var trip = await _context.Trips
+                .Include(t => t.Tickets)
+                .FirstOrDefaultAsync(t => t.id == tripId);
             if (trip == null || trip.sogheconTrong <= 0)
                 return BadRequest("Chuyến đi không hợp lệ hoặc đã hết chỗ.");
 
@@ -67,12 +67,12 @@ namespace PBL3_QuanLyDatXe.Controllers
 
         public async Task<IActionResult> Details()
         {
-            // Fix for CS1061: Use a property that exists in IdentityUser, such as UserName
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserName == User.Identity.Name);
-            if (user == null) return Unauthorized();
+            // Lấy UserId từ session
+            var userIdString = HttpContext.Session.GetString("UserId");
+            if (string.IsNullOrEmpty(userIdString) || !int.TryParse(userIdString, out int userId))
+                return Unauthorized();
 
-            // Fix for CS8602: Add null checks to prevent dereferencing null values
-            var customer = await _context.Customers.FirstOrDefaultAsync(c => c.UserId.ToString() == user.Id);
+            var customer = await _context.Customers.FirstOrDefaultAsync(c => c.UserId == userId);
             if (customer != null)
             {
                 var tickets = await _context.Tickets

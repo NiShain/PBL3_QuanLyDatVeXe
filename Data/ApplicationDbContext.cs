@@ -1,11 +1,9 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using PBL3_QuanLyDatXe.Models;
 
 namespace PBL3_QuanLyDatXe.Data
 {
-    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
+    public class ApplicationDbContext : DbContext
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
@@ -14,6 +12,7 @@ namespace PBL3_QuanLyDatXe.Data
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Line> Lines { get; set; }
         public DbSet<Ticket> Tickets { get; set; }
+        public DbSet<Account> Accounts { get; set; } // Thêm DbSet cho Account
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

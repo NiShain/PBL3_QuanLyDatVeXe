@@ -12,7 +12,7 @@ namespace PBL3_QuanLyDatXe.Models
         public string Email { get; set; }
         public string CCCD { get; set; }
 
-       [ForeignKey("Account")]
+        [ForeignKey("Account")]
         public int UserId { get; set; }
         public Account Account { get; set; }
 

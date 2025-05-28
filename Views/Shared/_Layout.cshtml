@@ -17,32 +17,54 @@
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
+				
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+                    @{
+                        var userId = Context.Session.GetString("UserId");
+                    }
+                    @if (Context.Session.GetString("Role") == "customer")
+                    {
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link" asp-area="" asp-controller="Bus" asp-action="Index">Danh Sách xe</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link" asp-area="" asp-controller="Customer" asp-action="Index">Quản Lý khách hàng</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Bus" asp-action="Create">Tạo xe</a>
+                            <a class="nav-link" asp-area="" asp-controller="Trip" asp-action="Index">Quản Lý chuyến</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Bus" asp-action="Index">Xem xe</a>
+                            <a class="nav-link" asp-area="" asp-controller="Line" asp-action="Index">Quản lý tuyến</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Trip" asp-action="Create">Tạo chuyến</a>
-                        </li>
-                    </ul>
-                    <ul class="navbar-nav ms-auto">
-                        <li class="nav-item">
-                            <a class="btn btn-outline-primary me-2" asp-controller="Account" asp-action="Login">Sign In</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="btn btn-primary" asp-controller="Account" asp-action="Register">Sign Up</a>
-                        </li>
-                    </ul>
+                    }
+                    @* else if (Context.Session.GetString("Role") == "User") *@
+                    @* { *@
+                    @*     <li class="nav-item"> *@
+                    @*         <a class="nav-link" asp-area="" asp-controller="DangKyKhoaHoc" asp-action="DanhSachKhoaHoc">Danh Sách Khóa Học</a> *@
+                    @*     </li> *@
+                    @*     <li class="nav-item"> *@
+                    @*         <a class="nav-link" asp-area="" asp-controller="DangKyKhoaHoc" asp-action="KhoaHocDaDangKy">Khóa học đã đăng ký</a> *@
+                    @*     </li> *@
+                    @* } *@
+                    @if (Context.Session.GetString("Role") == null)
+                    {
+                        <ul class="navbar-nav ms-auto">
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Account" asp-action="Login">Đăng Nhập</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Customer" asp-action="Create">Đăng Ký</a>
+                            </li>
+                        </ul>
+                    }
+                    @if (Context.Session.GetString("Role") != null && !string.IsNullOrEmpty(userId))
+                    {
+                        <ul class="navbar-nav ms-auto">
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Account" asp-action="Logout">Đăng Xuất</a>
+                            </li>
+                        </ul>
+                    }
                 </div>
             </div>
         </nav>

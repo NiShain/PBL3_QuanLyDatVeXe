@@ -1,6 +1,6 @@
 ﻿namespace PBL3_QuanLyDatXe.ViewModels
 {
-    public class CustomerViewModel
+    public class CustomerViewModels
     {
         public int Id { get; set; }
         public string Name { get; set; }

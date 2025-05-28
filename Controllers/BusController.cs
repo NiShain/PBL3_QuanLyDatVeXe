@@ -22,11 +22,15 @@ namespace PBL3_QuanLyDatXe.Controllers
         }
         public IActionResult Create()
         {
+
             return View();
         }
         [HttpPost]
         public async Task<IActionResult> Create(BusViewModels bus)
         {
+            var userIdStr = HttpContext.Session.GetString("UserId");
+            if (string.IsNullOrEmpty(userIdStr))
+                return RedirectToAction("Login", "Account");
             if (ModelState.IsValid)
             {
                 var Bus = new Bus

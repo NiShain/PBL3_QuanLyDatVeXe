@@ -4,21 +4,24 @@ using PBL3_QuanLyDatXe.Data;
 using PBL3_QuanLyDatXe.Models;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddAuthentication("Cookies")
+    .AddCookie("Cookies", options =>
+    {
+        options.LoginPath = "/Account/Login";
+        options.AccessDeniedPath = "/Accounts/AccessDenied";
+    });
+
 
 // Cấu hình DbContext
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// ✅ Cấu hình Identity dùng ApplicationUser
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
-    .AddEntityFrameworkStores<ApplicationDbContext>()
-    .AddDefaultTokenProviders();
 
 builder.Services.AddSession();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddControllersWithViews();
 
-var app = builder.Build();
+WebApplication app = builder.Build();
 
 // Middleware
 if (!app.Environment.IsDevelopment())
