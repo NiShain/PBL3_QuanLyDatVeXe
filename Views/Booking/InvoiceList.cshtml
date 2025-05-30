@@ -1,0 +1,42 @@
+﻿@model PBL3_QuanLyDatXe.ViewModels.InvoiceListViewModels
+
+@{
+    ViewData["Title"] = "Danh sách hóa đơn đã đặt";
+}
+
+<h2>🧾 Danh sách hóa đơn đã đặt</h2>
+
+@foreach (var invoice in Model.Invoices)
+{
+    <div class="card shadow p-4 mb-4">
+        <dl class="row">
+            <dt class="col-sm-4">Tên khách hàng:</dt>
+            <dd class="col-sm-8">@invoice.tenKhachHang</dd>
+
+            <dt class="col-sm-4">Tuyến:</dt>
+            <dd class="col-sm-8">@invoice.tenChuyenDi</dd>
+
+            <dt class="col-sm-4">Ngày đi:</dt>
+            <dd class="col-sm-8">@invoice.ngayDi.ToString("dd/MM/yyyy")</dd>
+
+            <dt class="col-sm-4">Ngày đặt:</dt>
+            <dd class="col-sm-8">@invoice.ngayDat.ToString("dd/MM/yyyy HH:mm")</dd>
+
+            <dt class="col-sm-4">Số ghế đặt:</dt>
+            <dd class="col-sm-8">@invoice.soGheDat</dd>
+
+            <dt class="col-sm-4">Mã vé:</dt>
+            <dd class="col-sm-8">
+                <ul class="list-unstyled mb-0">
+                    @foreach (var code in invoice.maCode)
+                    {
+                        <li class="badge bg-secondary me-1">@code</li>
+                    }
+                </ul>
+            </dd>
+
+            <dt class="col-sm-4">Tổng tiền:</dt>
+            <dd class="col-sm-8 text-success fw-bold">@invoice.tongTien.ToString("N0") VNĐ</dd>
+        </dl>
+    </div>
+}

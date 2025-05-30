@@ -47,56 +47,62 @@ namespace PBL3_QuanLyDatXe.Controllers
         [HttpGet]
         public async Task<IActionResult> ConfirmBooking()
         {
-            // Lấy UserId từ session
             var userIdString = HttpContext.Session.GetString("UserId");
             if (string.IsNullOrEmpty(userIdString) || !int.TryParse(userIdString, out int userId))
             {
                 return RedirectToAction("Login", "Account");
             }
 
-            // Tìm customer theo UserId
             var customer = await _context.Customers.FirstOrDefaultAsync(c => c.UserId == userId);
             if (customer == null)
             {
                 return NotFound("Không tìm thấy thông tin khách hàng.");
             }
 
-            // Lấy vé mới nhất của khách hàng
-            var latestTicket = await _context.Tickets
+            // Lấy tất cả vé của khách hàng, bao gồm thông tin chuyến và tuyến
+            var tickets = await _context.Tickets
                 .Where(t => t.Customerid == customer.id)
-                .OrderByDescending(t => t.ngayDat)
                 .Include(t => t.Trip)
                     .ThenInclude(trip => trip.Route)
-                .FirstOrDefaultAsync();
+                .OrderByDescending(t => t.ngayDat)
+                .ToListAsync();
 
-            if (latestTicket == null)
+            if (!tickets.Any())
             {
                 return Content("Bạn chưa có hóa đơn nào.");
             }
 
-            // Lấy tất cả vé cùng đợt đặt (cùng ngày đặt)
-            var tickets = await _context.Tickets
-                .Where(t => t.Customerid == customer.id && t.ngayDat == latestTicket.ngayDat)
-                .Include(t => t.Trip)
-                    .ThenInclude(trip => trip.Route)
-                .ToListAsync();
+            // Nhóm các vé theo từng lần đặt (ngayDat)
+            var grouped = tickets.GroupBy(t => new { t.Tripid, t.ngayDat })
+                .OrderByDescending(g => g.Key.ngayDat);
 
-            var trip = latestTicket.Trip;
-            var maCodeList = tickets.Select(t => t.Code).ToList();
-
-            var invoice = new InvoiceViewModels
+            var invoices = new List<InvoiceViewModels>();
+            foreach (var group in grouped)
             {
-                tenKhachHang = customer.Name,
-                tenChuyenDi = trip.Route?.tenTuyen ?? "",
-                soGheDat = tickets.Count,
-                ngayDat = latestTicket.ngayDat,
-                ngayDi = trip.ngayDi,
-                maCode = maCodeList,
-                tongTien = trip.giaVe * tickets.Count
+                var firstTicket = group.First();
+                var trip = firstTicket.Trip;
+                var maCodeList = group.Select(t => t.Code).ToList();
+
+                invoices.Add(new InvoiceViewModels
+                {
+                    tenKhachHang = customer.Name,
+                    tenChuyenDi = trip.Route?.tenTuyen ?? "",
+                    soGheDat = group.Count(),
+                    ngayDat = group.Key.ngayDat,
+                    ngayDi = trip.ngayDi,
+                    maCode = maCodeList,
+                    tongTien = trip.giaVe * group.Count()
+                });
+            }
+
+            var model = new InvoiceListViewModels
+            {
+                Invoices = invoices
             };
 
-            return View(invoice);
+            return View("InvoiceList", model); // Tạo view mới InvoiceList.cshtml
         }
+
         [HttpPost]
         public async Task<IActionResult> ConfirmBooking(int tripId, int soLuongGhe)
         {
