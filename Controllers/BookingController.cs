@@ -52,7 +52,7 @@ namespace PBL3_QuanLyDatXe.Controllers
             var userIdString = HttpContext.Session.GetString("UserId");
             if (string.IsNullOrEmpty(userIdString) || !int.TryParse(userIdString, out int userId))
             {
-                return Unauthorized("Người dùng chưa đăng nhập.");
+                return RedirectToAction("Login", "Account"); // Chuyển hướng đến trang đăng nhập nếu không có UserId
             }
 
             // Tìm customer theo UserId (Account.id)
