@@ -33,4 +33,8 @@
     <None Include="wwwroot\Img\ĐN.png" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Views\Booking\" />
+  </ItemGroup>
+
 </Project>

@@ -1,0 +1,53 @@
+﻿@model PBL3_QuanLyDatXe.ViewModels.RevenueViewModels
+
+@{
+    ViewData["Title"] = "Thống kê doanh thu";
+}
+
+<h2 class="mb-3">Thống kê doanh thu</h2>
+
+<form asp-action="Revenue" method="get" class="row g-3 mb-4">
+    <div class="col-md-4">
+        <label class="form-label">Từ ngày</label>
+        <input type="date" name="from" class="form-control" value="@Model.NgayBatDau?.ToString("yyyy-MM-dd")" />
+    </div>
+    <div class="col-md-4">
+        <label class="form-label">Đến ngày</label>
+        <input type="date" name="to" class="form-control" value="@Model.NgayKetThuc?.ToString("yyyy-MM-dd")" />
+    </div>
+    <div class="col-md-4 d-flex align-items-end">
+        <button type="submit" class="btn btn-primary w-100">Lọc</button>
+    </div>
+</form>
+
+<div class="mb-4">
+    <h4>Tổng doanh thu: <span class="text-success fw-bold">@Model.TongDoanhThu.ToString("N0") VNĐ</span></h4>
+    <p>Tổng số vé bán: <strong>@Model.SoLuongVeBan</strong></p>
+</div>
+
+@if (Model.ChiTiet != null && Model.ChiTiet.Any())
+{
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Tuyến</th>
+                <th>Số vé</th>
+                <th>Doanh thu (VNĐ)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.ChiTiet)
+            {
+                <tr>
+                    <td>@item.TenChuyenDi</td>
+                    <td>@item.SoVe</td>
+                    <td>@item.DoanhThu.ToString("N0")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <div class="alert alert-info">Không có dữ liệu trong khoảng thời gian đã chọn.</div>
+}
