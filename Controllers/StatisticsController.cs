@@ -13,6 +13,32 @@ namespace PBL3_QuanLyDatXe.Controllers
             _context = context;
         }
 
+        public bool IsAdmin()
+        {
+            var role = HttpContext.Session.GetString("Role");
+            return role == "Admin";
+        }
+
+
+        public IActionResult Revenue()
+        {
+            var userIdStr = HttpContext.Session.GetString("UserId");
+            if (string.IsNullOrEmpty(userIdStr))
+                return RedirectToAction("Login", "Account");
+            if (!IsAdmin())
+                return RedirectToAction("AccessDenied", "Account");
+            var model = new RevenueViewModels
+            {
+                NgayBatDau = DateTime.Now.AddDays(-30), // Mặc định 30 ngày trước
+                NgayKetThuc = DateTime.Now,
+                SoLuongVeBan = 0,
+                TongDoanhThu = 0,
+                ChiTiet = new List<RevenueViewModels.DetailItem>()
+            };
+            return View(model);
+        }
+
+        [HttpPost]
         public async Task<IActionResult> Revenue(DateTime? from, DateTime? to)
         {
             var query = _context.Tickets
