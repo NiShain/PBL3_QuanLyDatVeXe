@@ -1,0 +1,16 @@
+﻿@model IEnumerable<PBL3_QuanLyDatXe.Models.Line>
+
+@{
+    ViewData["Title"] = "Chọn tuyến đường";
+}
+
+<h2 class="mb-4">🚍 Chọn tuyến đường</h2>
+
+<div class="list-group">
+    @foreach (var route in Model)
+    {
+        <a asp-action="SelectTrip" asp-route-routeId="@route.id" class="list-group-item list-group-item-action">
+            <strong>@route.tenTuyen</strong> — @route.diemDi ➡️ @route.diemDen
+        </a>
+    }
+</div>

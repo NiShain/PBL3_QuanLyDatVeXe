@@ -1,0 +1,18 @@
+﻿@{
+    int tripId = (int)ViewBag.TripId;
+    int soGheConTrong = (int)ViewBag.SoGheConTrong;
+    ViewData["Title"] = "Chọn số ghế";
+}
+
+<h2 class="mb-4">🪑 Chọn số lượng ghế muốn đặt</h2>
+
+<div class="card p-4 shadow-sm">
+    <form asp-action="ConfirmBooking" method="post">
+        <input type="hidden" name="tripId" value="@tripId" />
+        <div class="mb-3">
+            <label class="form-label">Số lượng ghế (tối đa: @soGheConTrong)</label>
+            <input type="number" name="soLuongGhe" min="1" max="@soGheConTrong" class="form-control" required />
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Đặt vé</button>
+    </form>
+</div>

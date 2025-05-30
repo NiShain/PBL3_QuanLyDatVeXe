@@ -44,7 +44,59 @@ namespace PBL3_QuanLyDatXe.Controllers
             ViewBag.SoGheConTrong = trip.sogheconTrong;
             return View();
         }
+        [HttpGet]
+        public async Task<IActionResult> ConfirmBooking()
+        {
+            // Lấy UserId từ session
+            var userIdString = HttpContext.Session.GetString("UserId");
+            if (string.IsNullOrEmpty(userIdString) || !int.TryParse(userIdString, out int userId))
+            {
+                return RedirectToAction("Login", "Account");
+            }
 
+            // Tìm customer theo UserId
+            var customer = await _context.Customers.FirstOrDefaultAsync(c => c.UserId == userId);
+            if (customer == null)
+            {
+                return NotFound("Không tìm thấy thông tin khách hàng.");
+            }
+
+            // Lấy vé mới nhất của khách hàng
+            var latestTicket = await _context.Tickets
+                .Where(t => t.Customerid == customer.id)
+                .OrderByDescending(t => t.ngayDat)
+                .Include(t => t.Trip)
+                    .ThenInclude(trip => trip.Route)
+                .FirstOrDefaultAsync();
+
+            if (latestTicket == null)
+            {
+                return Content("Bạn chưa có hóa đơn nào.");
+            }
+
+            // Lấy tất cả vé cùng đợt đặt (cùng ngày đặt)
+            var tickets = await _context.Tickets
+                .Where(t => t.Customerid == customer.id && t.ngayDat == latestTicket.ngayDat)
+                .Include(t => t.Trip)
+                    .ThenInclude(trip => trip.Route)
+                .ToListAsync();
+
+            var trip = latestTicket.Trip;
+            var maCodeList = tickets.Select(t => t.Code).ToList();
+
+            var invoice = new InvoiceViewModels
+            {
+                tenKhachHang = customer.Name,
+                tenChuyenDi = trip.Route?.tenTuyen ?? "",
+                soGheDat = tickets.Count,
+                ngayDat = latestTicket.ngayDat,
+                ngayDi = trip.ngayDi,
+                maCode = maCodeList,
+                tongTien = trip.giaVe * tickets.Count
+            };
+
+            return View(invoice);
+        }
         [HttpPost]
         public async Task<IActionResult> ConfirmBooking(int tripId, int soLuongGhe)
         {
@@ -110,7 +162,7 @@ namespace PBL3_QuanLyDatXe.Controllers
 
             // Tạo ViewModel hóa đơn
             var invoice = new InvoiceViewModels
-            { 
+            {
                 tenKhachHang = customer.Name,
                 tenChuyenDi = trip.Route?.tenTuyen ?? "",
                 soGheDat = soLuongGhe,
@@ -120,12 +172,9 @@ namespace PBL3_QuanLyDatXe.Controllers
                 tongTien = trip.giaVe * soLuongGhe
             };
 
-            return View("Invoice", invoice);
+            return View(invoice);
         }
 
-        public IActionResult Success()
-        {
-            return View();
-        }
+        // Removed duplicate method causing CS0111
     }
 }

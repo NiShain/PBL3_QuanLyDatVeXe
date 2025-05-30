@@ -1,0 +1,31 @@
+﻿@model IEnumerable<PBL3_QuanLyDatXe.Models.Trip>
+
+@{
+    ViewData["Title"] = "Chọn chuyến xe";
+}
+
+<h2 class="mb-4">🚌 Chọn chuyến xe</h2>
+
+<table class="table table-striped table-hover">
+    <thead class="table-dark">
+        <tr>
+            <th>Ngày đi</th>
+            <th>Giờ đi</th>
+            <th>Số ghế còn</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var trip in Model)
+        {
+            <tr>
+                <td>@trip.ngayDi.ToShortDateString()</td>
+                <td>@trip.gioDi.ToString(@"hh\:mm")</td>
+                <td>@trip.sogheconTrong</td>
+                <td>
+                    <a asp-action="SelectQuantity" asp-route-tripId="@trip.id" class="btn btn-outline-primary btn-sm">Chọn</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

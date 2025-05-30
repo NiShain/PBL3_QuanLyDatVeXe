@@ -37,15 +37,16 @@
                             <a class="nav-link" asp-area="" asp-controller="Line" asp-action="Index">Quản lý tuyến</a>
                         </li>
                     }
-                    @* else if (Context.Session.GetString("Role") == "User") *@
-                    @* { *@
-                    @*     <li class="nav-item"> *@
-                    @*         <a class="nav-link" asp-area="" asp-controller="DangKyKhoaHoc" asp-action="DanhSachKhoaHoc">Danh Sách Khóa Học</a> *@
-                    @*     </li> *@
-                    @*     <li class="nav-item"> *@
-                    @*         <a class="nav-link" asp-area="" asp-controller="DangKyKhoaHoc" asp-action="KhoaHocDaDangKy">Khóa học đã đăng ký</a> *@
-                    @*     </li> *@
-                    @* } *@
+                     else if (Context.Session.GetString("Role") == "customer") 
+                     {
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="Booking" asp-action="SelectRoute">Đặt vé</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="Booking" asp-action="ConfirmBooking">Hóa Đơn</a>
+                        </li>
+                    } 
                     @if (Context.Session.GetString("Role") == null)
                     {
                         <ul class="navbar-nav ms-auto">

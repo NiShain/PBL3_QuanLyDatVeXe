@@ -1,0 +1,41 @@
+﻿@model PBL3_QuanLyDatXe.ViewModels.InvoiceViewModels
+
+@{
+    ViewData["Title"] = "Hóa đơn đặt vé";
+}
+
+<h2 class="mb-4">🧾 Hóa đơn đặt vé</h2>
+
+<div class="card shadow p-4">
+    <dl class="row">
+        <dt class="col-sm-4">Tên khách hàng:</dt>
+        <dd class="col-sm-8">@Model.tenKhachHang</dd>
+
+        <dt class="col-sm-4">Tuyến:</dt>
+        <dd class="col-sm-8">@Model.tenChuyenDi</dd>
+
+        <dt class="col-sm-4">Ngày đi:</dt>
+        <dd class="col-sm-8">@Model.ngayDi.ToString("dd/MM/yyyy")</dd>
+
+        <dt class="col-sm-4">Ngày đặt:</dt>
+        <dd class="col-sm-8">@Model.ngayDat.ToString("dd/MM/yyyy HH:mm")</dd>
+
+        <dt class="col-sm-4">Số ghế đặt:</dt>
+        <dd class="col-sm-8">@Model.soGheDat</dd>
+
+        <dt class="col-sm-4">Mã vé:</dt>
+        <dd class="col-sm-8">
+            <ul class="list-unstyled mb-0">
+                @foreach (var code in Model.maCode)
+                {
+                    <li class="badge bg-secondary me-1">@code</li>
+                }
+            </ul>
+        </dd>
+
+        <dt class="col-sm-4">Tổng tiền:</dt>
+        <dd class="col-sm-8 text-success fw-bold">@Model.tongTien.ToString("N0") VNĐ</dd>
+    </dl>
+
+    <a asp-controller="Home" asp-action="Index" class="btn btn-success mt-3">🔙 Quay về trang chính</a>
+</div>
