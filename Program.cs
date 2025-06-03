@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using PBL3_QuanLyDatXe.Services.Vnpay;
 using PBL3_QuanLyDatXe.Data;
 using PBL3_QuanLyDatXe.Models;
 
@@ -10,6 +11,9 @@ builder.Services.AddAuthentication("Cookies")
         options.LoginPath = "/Account/Login";
         options.AccessDeniedPath = "/Account/AccessDenied";
     });
+
+//Connect to VnPayAPI
+builder.Services.AddScoped<IVnPayService, VnPayService>();
 
 
 // Cấu hình DbContext
