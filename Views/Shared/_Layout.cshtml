@@ -25,16 +25,19 @@
                     @if (Context.Session.GetString("Role") == "Admin")
                     {
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Bus" asp-action="Index">Danh Sách xe</a>
+                            <a class="nav-link mr-3" asp-area="" asp-controller="Bus" asp-action="Index">Danh Sách xe</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Customer" asp-action="Index">Quản Lý khách hàng</a>
+                            <a class="nav-link mr-3" asp-area="" asp-controller="Customer" asp-action="Index">Quản Lý khách hàng</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Trip" asp-action="Index">Quản Lý chuyến</a>
+                            <a class="nav-link mr-3" asp-area="" asp-controller="Trip" asp-action="Index">Quản Lý chuyến</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Line" asp-action="Index">Quản lý tuyến</a>
+                            <a class="nav-link mr-3" asp-area="" asp-controller="Line" asp-action="Index">Quản lý tuyến</a>
+                        </li>
+                        <li class="nav-item mr-3">
+                            <a class="nav-link" asp-area="" asp-controller="Statistics" asp-action="Revenue">Danh Sách xe</a>
                         </li>
                     }
                      else if (Context.Session.GetString("Role") == "customer") 
