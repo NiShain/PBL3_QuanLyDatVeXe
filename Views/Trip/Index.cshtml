@@ -6,16 +6,43 @@
 
 <h2>@ViewData["Title"]</h2>
 
-<a asp-action="Create" class="btn btn-success mb-3">+ Thêm chuyến mới</a>
+<div class="row mb-3">
+    <div class="col-md-8">
+        <form method="get" class="row g-3">
+            <div class="col-md-4">
+                <input type="text" class="form-control" name="diemDi" placeholder="Điểm đi" value="@ViewData["CurrentDiemDi"]">
+            </div>
+            <div class="col-md-4">
+                <input type="text" class="form-control" name="diemDen" placeholder="Điểm đến" value="@ViewData["CurrentDiemDen"]">
+            </div>
+            <div class="col-md-4">
+                <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+            </div>
+        </form>
+    </div>
+    <div class="col-md-4 text-end">
+        <a asp-action="Create" class="btn btn-success">+ Thêm chuyến mới</a>
+    </div>
+</div>
 
 <table class="table table-bordered">
     <thead>
         <tr>
             <th>Tuyến</th>
             <th>Xe</th>
-            <th>Ngày đi</th>
+            <th>
+                <a asp-action="Index"
+                   asp-route-diemDi="@ViewData["CurrentDiemDi"]"
+                   asp-route-diemDen="@ViewData["CurrentDiemDen"]"
+                   asp-route-sortOrder="@ViewData["NgayDiSortParam"]">Ngày đi</a>
+            </th>
             <th>Giờ đi</th>
-            <th>Giá vé</th>
+            <th>
+                <a asp-action="Index"
+                   asp-route-diemDi="@ViewData["CurrentDiemDi"]"
+                   asp-route-diemDen="@ViewData["CurrentDiemDen"]"
+                   asp-route-sortOrder="@ViewData["GiaSortParam"]">Giá vé</a>
+            </th>
             <th>Số ghế</th>
             <th>Còn trống</th>
             <th>Hành động</th>

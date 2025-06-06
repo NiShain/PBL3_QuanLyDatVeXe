@@ -37,5 +37,13 @@
         <dd class="col-sm-8 text-success fw-bold">@Model.tongTien.ToString("N0") VNĐ</dd>
     </dl>
 
+    <form asp-controller="Payment" asp-action="CreatePaymentUrlVnpay" method="post">
+        <input type="hidden" name="OrderType" value="ticket" />
+        <input type="hidden" name="Amount" value="@Model.tongTien" />
+        <input type="hidden" name="OrderDescription" value="Thanh toán vé xe tuyến @Model.tenChuyenDi ngày @Model.ngayDi.ToString("dd/MM/yyyy")" />
+        <input type="hidden" name="Name" value="@Model.tenKhachHang" />
+        <button type="submit" class="btn btn-primary mt-3">Thanh toán VNPay</button>
+    </form>
+
     <a asp-controller="Home" asp-action="Index" class="btn btn-success mt-3">🔙 Quay về trang chính</a>
 </div>

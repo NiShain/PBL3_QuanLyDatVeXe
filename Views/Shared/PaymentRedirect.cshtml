@@ -1,0 +1,35 @@
+﻿@{
+    ViewData["Title"] = "Chuyển hướng thanh toán";
+    Layout = "_Layout";
+    var paymentModel = ViewBag.PaymentModel as PBL3_QuanLyDatXe.Models.Vnpay.PaymentInformationModel;
+}
+
+<div class="container text-center py-5">
+    <div class="card shadow mx-auto" style="max-width: 500px">
+        <div class="card-body">
+            <h3 class="card-title mb-4">Đang chuyển đến cổng thanh toán</h3>
+            <div class="spinner-border text-primary mb-4" role="status">
+                <span class="visually-hidden">Đang tải...</span>
+            </div>
+            <p class="card-text">Xin vui lòng đợi trong giây lát, hệ thống đang kết nối với VNPay...</p>
+            <small class="text-muted">Nếu trang không tự động chuyển hướng, vui lòng nhấn nút bên dưới.</small>
+
+            <form id="paymentForm" action="/CreatePaymentUrl" method="post" class="mt-4">
+                <input type="hidden" name="OrderType" value="@paymentModel.OrderType" />
+                <input type="hidden" name="Amount" value="@paymentModel.Amount" />
+                <input type="hidden" name="OrderDescription" value="@paymentModel.OrderDescription" />
+                <input type="hidden" name="Name" value="@paymentModel.Name" />
+                <button type="submit" class="btn btn-primary">Tiếp tục thanh toán</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Tự động gửi form sau khi trang đã load xong
+    document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(function() {
+            document.getElementById('paymentForm').submit();
+        }, 1500); // Đợi 1.5 giây để hiển thị loading spinner
+    });
+</script>

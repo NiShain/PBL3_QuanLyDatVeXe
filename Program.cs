@@ -62,4 +62,11 @@ using (var scope = app.Services.CreateScope())
         context.SaveChanges();
     }
 }
+
+app.Use(async (context, next) =>
+{
+    Console.WriteLine($"Request: {context.Request.Method} {context.Request.Path}{context.Request.QueryString}");
+    await next();
+    Console.WriteLine($"Response: {context.Response.StatusCode}");
+});
 app.Run();

@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using PBL3_QuanLyDatXe.Data;
 using PBL3_QuanLyDatXe.Models;
+using PBL3_QuanLyDatXe.Models.Vnpay;
 using PBL3_QuanLyDatXe.ViewModels;
 
 namespace PBL3_QuanLyDatXe.Controllers
@@ -20,10 +21,54 @@ namespace PBL3_QuanLyDatXe.Controllers
             return View();
         }
 
-        public IActionResult SelectRoute()
+        public async Task<IActionResult> SelectRoute(string diemDi, string diemDen, string sortOrder)
         {
-            var routes = _context.Lines.ToList();
-            return View(routes);
+            // Lưu trạng thái tìm kiếm và sắp xếp
+            ViewData["CurrentDiemDi"] = diemDi;
+            ViewData["CurrentDiemDen"] = diemDen;
+            ViewData["TenTuyenSortParam"] = string.IsNullOrEmpty(sortOrder) ? "tenTuyen_desc" : "";
+            ViewData["DiemDiSortParam"] = sortOrder == "diemDi" ? "diemDi_desc" : "diemDi";
+            ViewData["DiemDenSortParam"] = sortOrder == "diemDen" ? "diemDen_desc" : "diemDen";
+
+            // Query cơ bản
+            var routes = _context.Lines.AsQueryable();
+
+            // Áp dụng lọc theo điểm đi và điểm đến nếu có
+            if (!string.IsNullOrEmpty(diemDi))
+            {
+                routes = routes.Where(r => r.diemDi.Contains(diemDi));
+            }
+
+            if (!string.IsNullOrEmpty(diemDen))
+            {
+                routes = routes.Where(r => r.diemDen.Contains(diemDen));
+            }
+
+            // Áp dụng sắp xếp
+            switch (sortOrder)
+            {
+                case "tenTuyen_desc":
+                    routes = routes.OrderByDescending(r => r.tenTuyen);
+                    break;
+                case "diemDi":
+                    routes = routes.OrderBy(r => r.diemDi);
+                    break;
+                case "diemDi_desc":
+                    routes = routes.OrderByDescending(r => r.diemDi);
+                    break;
+                case "diemDen":
+                    routes = routes.OrderBy(r => r.diemDen);
+                    break;
+                case "diemDen_desc":
+                    routes = routes.OrderByDescending(r => r.diemDen);
+                    break;
+                default:
+                    // Mặc định sắp xếp theo tên tuyến tăng dần
+                    routes = routes.OrderBy(r => r.tenTuyen);
+                    break;
+            }
+
+            return View(await routes.ToListAsync());
         }
 
         public IActionResult SelectTrip(int routeId)
@@ -83,6 +128,9 @@ namespace PBL3_QuanLyDatXe.Controllers
                 var trip = firstTicket.Trip;
                 var maCodeList = group.Select(t => t.Code).ToList();
 
+                // Kiểm tra nếu tất cả vé trong group đã thanh toán
+                bool isPaid = group.All(t => t.trangThai == "Đã thanh toán");
+
                 invoices.Add(new InvoiceViewModels
                 {
                     tenKhachHang = customer.Name,
@@ -91,7 +139,9 @@ namespace PBL3_QuanLyDatXe.Controllers
                     ngayDat = group.Key.ngayDat,
                     ngayDi = trip.ngayDi,
                     maCode = maCodeList,
-                    tongTien = trip.giaVe * group.Count()
+                    tongTien = trip.giaVe * group.Count(),
+                    TripID = trip.id, // Thêm dòng này
+                    IsPaid = isPaid
                 });
             }
 
@@ -181,6 +231,45 @@ namespace PBL3_QuanLyDatXe.Controllers
             return View(invoice);
         }
 
-        // Removed duplicate method causing CS0111
+        [HttpPost]
+        public async Task<IActionResult> PayInvoice(int tripId, string firstTicketCode)
+        {
+            var userIdString = HttpContext.Session.GetString("UserId");
+            if (string.IsNullOrEmpty(userIdString) || !int.TryParse(userIdString, out int userId))
+                return RedirectToAction("Login", "Account");
+
+            var customer = await _context.Customers.FirstOrDefaultAsync(c => c.UserId == userId);
+            if (customer == null)
+                return NotFound("Không tìm thấy thông tin khách hàng.");
+
+            // Tìm vé cụ thể bằng mã vé đầu tiên
+            var firstTicket = await _context.Tickets
+                .FirstOrDefaultAsync(t => t.Customerid == customer.id && t.Tripid == tripId && t.Code == firstTicketCode);
+
+            if (firstTicket == null)
+                return NotFound("Không tìm thấy hóa đơn.");
+
+            // Tìm tất cả vé cùng thời gian đặt chính xác
+            var tickets = await _context.Tickets
+                .Where(t => t.Customerid == customer.id && t.Tripid == tripId && t.ngayDat == firstTicket.ngayDat)
+                .Include(t => t.Trip)
+                .ToListAsync();
+
+            var totalAmount = tickets.First().Trip.giaVe * tickets.Count;
+
+            // Tạo mô tả đơn hàng với đầy đủ thông tin và thêm mã vé đầu tiên
+            var model = new PaymentInformationModel
+            {
+                OrderType = "billpayment",
+                Amount = (double)totalAmount,
+                OrderDescription = $"{tripId}|{firstTicket.ngayDat:yyyy-MM-dd HH:mm:ss}|{firstTicketCode}",
+                Name = customer.Name
+            };
+
+            ViewBag.PaymentModel = model;
+            return View("~/Views/Shared/PaymentRedirect.cshtml");
+        }
+
     }
+
 }

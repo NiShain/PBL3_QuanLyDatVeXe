@@ -6,7 +6,7 @@
 
 <h2 class="mb-3">Thống kê doanh thu</h2>
 
-<form asp-action="Revenue" method="get" class="row g-3 mb-4">
+<form asp-action="Revenue" method="post" class="row g-3 mb-4">
     <div class="col-md-4">
         <label class="form-label">Từ ngày</label>
         <input type="date" name="from" class="form-control" value="@Model.NgayBatDau?.ToString("yyyy-MM-dd")" />
@@ -51,3 +51,86 @@ else
 {
     <div class="alert alert-info">Không có dữ liệu trong khoảng thời gian đã chọn.</div>
 }
+
+@using Newtonsoft.Json
+@{
+    // Chuẩn bị dữ liệu cho từng kiểu thống kê
+    var labelsByDay = Model.DoanhThuTheoNgay.Select(x => x.Ngay.ToString("dd/MM/yyyy")).ToList();
+    var dataByDay = Model.DoanhThuTheoNgay.Select(x => x.DoanhThu).ToList();
+
+    var labelsByMonth = Model.DoanhThuTheoThang.Select(x => $"{x.Thang:00}/{x.Nam}").ToList();
+    var dataByMonth = Model.DoanhThuTheoThang.Select(x => x.DoanhThu).ToList();
+
+    var labelsByYear = Model.DoanhThuTheoNam.Select(x => x.Nam.ToString()).ToList();
+    var dataByYear = Model.DoanhThuTheoNam.Select(x => x.DoanhThu).ToList();
+}
+
+<div class="mb-3">
+    <label for="chartType" class="form-label">Kiểu thống kê</label>
+    <select id="chartType" class="form-select" style="max-width: 300px;">
+        <option value="day" selected>Theo ngày</option>
+        <option value="month">Theo tháng</option>
+        <option value="year">Theo năm</option>
+    </select>
+</div>
+<div>
+    <canvas id="revenueLineChart"></canvas>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Dữ liệu cho từng kiểu thống kê
+    const chartData = {
+        day: {
+            labels: @Html.Raw(JsonConvert.SerializeObject(labelsByDay)),
+            data: @Html.Raw(JsonConvert.SerializeObject(dataByDay)),
+            label: "Doanh thu theo ngày"
+        },
+        month: {
+            labels: @Html.Raw(JsonConvert.SerializeObject(labelsByMonth)),
+            data: @Html.Raw(JsonConvert.SerializeObject(dataByMonth)),
+            label: "Doanh thu theo tháng"
+        },
+        year: {
+            labels: @Html.Raw(JsonConvert.SerializeObject(labelsByYear)),
+            data: @Html.Raw(JsonConvert.SerializeObject(dataByYear)),
+            label: "Doanh thu theo năm"
+        }
+    };
+
+    const ctx = document.getElementById('revenueLineChart').getContext('2d');
+    let revenueLineChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: chartData.day.labels,
+            datasets: [{
+                label: chartData.day.label,
+                data: chartData.day.data,
+                borderColor: 'rgba(54, 162, 235, 1)',
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                fill: true,
+                tension: 0.3
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return value.toLocaleString('vi-VN') + ' VNĐ';
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    document.getElementById('chartType').addEventListener('change', function () {
+        const type = this.value;
+        revenueLineChart.data.labels = chartData[type].labels;
+        revenueLineChart.data.datasets[0].data = chartData[type].data;
+        revenueLineChart.data.datasets[0].label = chartData[type].label;
+        revenueLineChart.update();
+    });
+</script>

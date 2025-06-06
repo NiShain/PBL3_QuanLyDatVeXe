@@ -37,6 +37,25 @@
 
             <dt class="col-sm-4">Tổng tiền:</dt>
             <dd class="col-sm-8 text-success fw-bold">@invoice.tongTien.ToString("N0") VNĐ</dd>
+            <dt class="col-sm-4">Trạng thái:</dt>
+            <dd class="col-sm-8">
+                @if (invoice.IsPaid)
+                {
+                    <span class="badge bg-success">Đã thanh toán</span>
+                }
+                else
+                {
+                    <span class="badge bg-warning text-dark">Chưa thanh toán</span>
+                }
+            </dd>
         </dl>
+        @if (!invoice.IsPaid)
+        {
+            <form asp-action="PayInvoice" asp-controller="Booking" method="post" class="mt-2">
+                <input type="hidden" name="tripId" value="@invoice.TripID" />
+                <input type="hidden" name="firstTicketCode" value="@invoice.maCode.FirstOrDefault()" />
+                <button type="submit" class="btn btn-primary">Thanh toán VNPay</button>
+            </form>
+        }
     </div>
 }

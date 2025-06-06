@@ -19,14 +19,50 @@ namespace PBL3_QuanLyDatXe.Controllers
             var role = HttpContext.Session.GetString("Role");
             return role == "Admin";
         }
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string diemDi, string diemDen, string sortOrder)
         {
-            
-            var trips = await _context.Trips
+            // Lấy giá trị từ ViewData để duy trì trạng thái sắp xếp
+            ViewData["CurrentDiemDi"] = diemDi;
+            ViewData["CurrentDiemDen"] = diemDen;
+            ViewData["NgayDiSortParam"] = string.IsNullOrEmpty(sortOrder) ? "ngaydi_desc" : "";
+            ViewData["GiaSortParam"] = sortOrder == "gia" ? "gia_desc" : "gia";
+
+            // Query cơ bản
+            var trips = _context.Trips
                 .Include(t => t.Route)
                 .Include(t => t.Bus)
-                .ToListAsync();
-            return View(trips);
+                .AsQueryable();
+
+            // Lọc theo điểm đi và điểm đến nếu có
+            if (!string.IsNullOrEmpty(diemDi))
+            {
+                trips = trips.Where(t => t.Route.diemDi.Contains(diemDi));
+            }
+
+            if (!string.IsNullOrEmpty(diemDen))
+            {
+                trips = trips.Where(t => t.Route.diemDen.Contains(diemDen));
+            }
+
+            // Áp dụng sắp xếp
+            switch (sortOrder)
+            {
+                case "ngaydi_desc":
+                    trips = trips.OrderByDescending(t => t.ngayDi).ThenByDescending(t => t.gioDi);
+                    break;
+                case "gia":
+                    trips = trips.OrderBy(t => t.giaVe);
+                    break;
+                case "gia_desc":
+                    trips = trips.OrderByDescending(t => t.giaVe);
+                    break;
+                default:
+                    // Mặc định sắp xếp theo ngày đi tăng dần
+                    trips = trips.OrderBy(t => t.ngayDi).ThenBy(t => t.gioDi);
+                    break;
+            }
+
+            return View(await trips.ToListAsync());
         }
 
         public async Task<IActionResult> Details(int? id)

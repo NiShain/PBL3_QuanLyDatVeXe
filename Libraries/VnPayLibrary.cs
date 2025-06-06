@@ -75,7 +75,7 @@ namespace PBL3_QuanLyDatXe.Libraries
         }
         public void AddRequestData(string key, string value)
         {
-            if (!string.IsNullOrEmpty(value))
+            if (!string.IsNullOrEmpty(value) && !_requestData.ContainsKey(key))
             {
                 _requestData.Add(key, value);
             }

@@ -5,7 +5,21 @@
 }
 
 <h2 class="mb-4">🚍 Chọn tuyến đường</h2>
-
+<div class="row mb-3">
+    <div class="col-md-12">
+        <form method="get" class="row g-3">
+            <div class="col-md-4">
+                <input type="text" class="form-control" name="diemDi" placeholder="Điểm đi" value="@ViewData["CurrentDiemDi"]">
+            </div>
+            <div class="col-md-4">
+                <input type="text" class="form-control" name="diemDen" placeholder="Điểm đến" value="@ViewData["CurrentDiemDen"]">
+            </div>
+            <div class="col-md-4">
+                <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+            </div>
+        </form>
+    </div>
+</div>
 <div class="list-group">
     @foreach (var route in Model)
     {
