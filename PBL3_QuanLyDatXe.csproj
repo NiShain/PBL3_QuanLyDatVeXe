@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="Views\Home\Home.cshtml" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.5" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.3.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.5" />
@@ -24,7 +20,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="Views\Home\Home.cshtml" />
     <None Include="wwwroot\Img\banner.jpg" />
     <None Include="wwwroot\Img\HCM.png" />
     <None Include="wwwroot\Img\HN.jpg" />

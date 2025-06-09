@@ -1,97 +1,208 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
-    <meta charset="utf-8" />
+    <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - PBL3_QuanLyDatXe</title>
+    <title>@ViewData["Title"] - DUT Bus Lines</title>
+
+    @* CSS files *@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/PBL3_QuanLyDatXe.styles.css" asp-append-version="true" />
-</head>
-<body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">PBL3_QuanLyDatXe</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-				
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    @{
-                        var userId = Context.Session.GetString("UserId");
-                    }
-                    @if (Context.Session.GetString("Role") == "Admin")
-                    {
-                        <li class="nav-item">
-                            <a class="nav-link mr-3" asp-area="" asp-controller="Bus" asp-action="Index">Danh Sách xe</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link mr-3" asp-area="" asp-controller="Customer" asp-action="Index">Quản Lý khách hàng</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link mr-3" asp-area="" asp-controller="Trip" asp-action="Index">Quản Lý chuyến</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link mr-3" asp-area="" asp-controller="Line" asp-action="Index">Quản lý tuyến</a>
-                        </li>
-                        <li class="nav-item mr-3">
-                            <a class="nav-link" asp-area="" asp-controller="Statistics" asp-action="Revenue">Danh Sách xe</a>
-                        </li>
-                    }
-                     else if (Context.Session.GetString("Role") == "customer") 
-                     {
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Booking" asp-action="SelectRoute">Đặt vé</a>
-                        </li>
+    <link rel="stylesheet" href="~/css/footer.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/header.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/menu.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/recommend.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/searchbox.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/animations.css" asp-append-version="false" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.css" />
 
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Booking" asp-action="ConfirmBooking">Hóa Đơn</a>
-                        </li>
-                    } 
-                    @if (Context.Session.GetString("Role") == null)
-                    {
-                        <ul class="navbar-nav ms-auto">
-                            <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="Account" asp-action="Login">Đăng Nhập</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="Customer" asp-action="Create">Đăng Ký</a>
-                            </li>
-                        </ul>
-                    }
-                    @if (Context.Session.GetString("Role") != null && !string.IsNullOrEmpty(userId))
-                    {
-                        <ul class="navbar-nav ms-auto">
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="Account" asp-action="Logout">Đăng Xuất</a>
-                            </li>
-                        </ul>
-                    }
-                </div>
-            </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-            @if (TempData["SuccessMessage"] != null)
-            {
-                <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
-                    @TempData["SuccessMessage"]
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
+    <style>
+        :root {
+            --primary-color: #2072ff;
+            --secondary-color: #4585ff;
+            --accent-color: #ff6b00;
+        }
+
+        html {
+            position: relative;
+            min-height: 100vh;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-color: #f8f9fa;
+        }
+
+        .page-wrapper {
+            flex: 1 0 auto;
+            padding-bottom: 100px;
+        }
+
+        .topbar {
+            background: linear-gradient(135deg, #ffffff, var(--secondary-color));
+            padding: 15px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .menu {
+            background-color: var(--primary-color);
+            padding: 10px 0;
+        }
+
+            .menu ul li a {
+                transition: all 0.3s ease;
+                position: relative;
             }
 
+                .menu ul li a:hover {
+                    color: var(--accent-color);
+                }
+
+                .menu ul li a:after {
+                    content: '';
+                    position: absolute;
+                    width: 0;
+                    height: 2px;
+                    background: var(--accent-color);
+                    bottom: -5px;
+                    left: 0;
+                    transition: width 0.3s ease;
+                }
+
+                .menu ul li a:hover:after {
+                    width: 100%;
+                }
+
+        .btn-login {
+            background-color: var(--primary-color);
+            border: none;
+            padding: 8px 20px;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+
+            .btn-login:hover {
+                background-color: var(--accent-color);
+                transform: translateY(-2px);
+                box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            }
+
+            .btn-login a {
+                color: white !important;
+                text-decoration: none;
+            }
+
+        .footer {
+            margin-top: auto;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 40px 0;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+        }
+
+        .container {
+            width: 100%;
+            padding: 0;
+            margin: 0;
+            max-width: none;
+        }
+
+        main {
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="page-wrapper">
+        <div class="topbar">
+            <div class="left-section">
+                <img src="~/Img/logo_header.jpg" id="logo" alt="logo" />
+            </div>
+            <div class="center-section">
+                <h1 class="slogan">UY TÍN TẠO NÊN THƯƠNG HIỆU</h1>
+            </div>
+            <div class="right-section">
+                @if (Context.Session.GetString("Role") == null)
+                {
+                    <button class="btn-login">
+                        <i class="fa-regular fa-circle-user"></i>
+                        <a asp-controller="Account" asp-action="Login">Đăng nhập/Đăng ký</a>
+                    </button>
+                }
+                else
+                {
+                    <button class="btn-login">
+                        <i class="fa-regular fa-circle-user"></i>
+                        <a asp-controller="Account" asp-action="Logout">Đăng xuất</a>
+                    </button>
+                }
+            </div>
+        </div>
+
+        <div class="menu">
+            <nav>
+                <ul>
+                    @if (Context.Session.GetString("Role") == "Admin")
+                    {
+                        <li><a asp-controller="Bus" asp-action="Index">Danh Sách xe</a></li>
+                        <li><a asp-controller="Customer" asp-action="Index">Quản Lý khách hàng</a></li>
+                        <li><a asp-controller="Trip" asp-action="Index">Quản Lý chuyến</a></li>
+                        <li><a asp-controller="Line" asp-action="Index">Quản lý tuyến</a></li>
+                        <li><a asp-controller="Statistics" asp-action="Revenue">Thống kê</a></li>
+                    }
+                    else
+                    {
+                        <li><a asp-controller="Home" asp-action="Index">Trang Chủ</a></li>
+                        <li><a asp-controller="Booking" asp-action="SelectRoute">Lịch Trình</a></li>
+                        <li><a asp-controller="Booking" asp-action="ConfirmBooking">Hóa Đơn</a></li>
+                        <li><a href="#footer" class="scroll-link">Liên Hệ</a></li>
+                    }
+                </ul>
+            </nav>
+        </div>
+
+        <main role="main" class="animate-fade-in">
+            @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
+    <div class="footer" id="footer">
         <div class="container">
-            &copy; 2025 - PBL3_QuanLyDatXe - <a asp-controller="Home" asp-action="Privacy">Privacy</a>
+            <div class="row">
+                <div class="col-md-4">
+                    <img src="~/Img/logo_footer.png" id="logo-footer" alt="logo footer" class="mb-4" />
+                </div>
+                <div class="col-md-4">
+                    <h4><i class="fa-solid fa-location-dot"></i> Địa Chỉ</h4>
+                    <p class="address">
+                        <i class="fa-regular fa-building"></i>
+                        Trụ sở: Số 97-99 Cao Sơn Pháo, P. Hòa An, Q. Cẩm lệ, TP. Đà Nẵng
+                    </p>
+                    <p class="address">
+                        <i class="fa-regular fa-building"></i>
+                        Bến xe TT: 148 Tôn Đức Thắng, P. Hòa Minh, Q. Liên Chiểu, TP. Đà Nẵng
+                    </p>
+                </div>
+                <div class="col-md-4">
+                    <h4>Liên hệ</h4>
+                    <p class="contact">
+                        <i class="fa-solid fa-phone"></i> Tổng đài: 0236.376.76.79
+                    </p>
+                    <p class="contact">
+                        <i class="fa-solid fa-envelope"></i> Email: info@benxedanang.vn
+                    </p>
+                </div>
+            </div>
         </div>
-    </footer>
+    </div>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

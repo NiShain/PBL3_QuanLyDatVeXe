@@ -1,69 +1,51 @@
 ﻿@model IEnumerable<PBL3_QuanLyDatXe.Models.Trip>
-
 @{
-    ViewData["Title"] = "Danh sách chuyến xe";
+    ViewData["Title"] = "Quản lý chuyến xe";
+    Layout = "_AdminLayout";
 }
 
-<h2>@ViewData["Title"]</h2>
-
-<div class="row mb-3">
-    <div class="col-md-8">
-        <form method="get" class="row g-3">
-            <div class="col-md-4">
-                <input type="text" class="form-control" name="diemDi" placeholder="Điểm đi" value="@ViewData["CurrentDiemDi"]">
-            </div>
-            <div class="col-md-4">
-                <input type="text" class="form-control" name="diemDen" placeholder="Điểm đến" value="@ViewData["CurrentDiemDen"]">
-            </div>
-            <div class="col-md-4">
-                <button type="submit" class="btn btn-primary">Tìm kiếm</button>
-            </div>
-        </form>
+<div class="card">
+    <div class="card-header bg-white">
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Thêm chuyến mới
+        </a>
     </div>
-    <div class="col-md-4 text-end">
-        <a asp-action="Create" class="btn btn-success">+ Thêm chuyến mới</a>
+    <div class="card-body p-0">
+        <table class="table table-striped table-hover mb-0">
+            <thead class="bg-light">
+                <tr>
+                    <th>Tuyến</th>
+                    <th>Xe</th>
+                    <th>Ngày đi</th>
+                    <th>Giờ đi</th>
+                    <th>Giá vé</th>
+                    <th>Số ghế</th>
+                    <th>Còn trống</th>
+                    <th>Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.Route?.tenTuyen</td>
+                        <td>@item.Bus?.tenXe</td>
+                        <td>@item.ngayDi.ToShortDateString()</td>
+                        <td>@item.gioDi.ToString("HH:mm")</td>
+                        <td>@item.giaVe.ToString("N0")</td>
+                        <td>@item.soGhe</td>
+                        <td>@item.sogheconTrong</td>
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@item.id" class="btn btn-sm btn-warning">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <a asp-action="Delete" asp-route-id="@item.id" class="btn btn-sm btn-danger">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
     </div>
 </div>
-
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>Tuyến</th>
-            <th>Xe</th>
-            <th>
-                <a asp-action="Index"
-                   asp-route-diemDi="@ViewData["CurrentDiemDi"]"
-                   asp-route-diemDen="@ViewData["CurrentDiemDen"]"
-                   asp-route-sortOrder="@ViewData["NgayDiSortParam"]">Ngày đi</a>
-            </th>
-            <th>Giờ đi</th>
-            <th>
-                <a asp-action="Index"
-                   asp-route-diemDi="@ViewData["CurrentDiemDi"]"
-                   asp-route-diemDen="@ViewData["CurrentDiemDen"]"
-                   asp-route-sortOrder="@ViewData["GiaSortParam"]">Giá vé</a>
-            </th>
-            <th>Số ghế</th>
-            <th>Còn trống</th>
-            <th>Hành động</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>@item.Route?.tenTuyen</td>
-                <td>@item.Bus?.tenXe</td>
-                <td>@item.ngayDi.ToShortDateString()</td>
-                <td>@item.gioDi.ToString(@"hh\:mm")</td>
-                <td>@item.giaVe.ToString("N0")</td>
-                <td>@item.soGhe</td>
-                <td>@item.sogheconTrong</td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.id" class="btn btn-warning btn-sm">Sửa</a>
-                    <a asp-action="Delete" asp-route-id="@item.id" class="btn btn-danger btn-sm">Xoá</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>

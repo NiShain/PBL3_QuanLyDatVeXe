@@ -23,7 +23,7 @@ namespace PBL3_QuanLyDatXe.Controllers
         public async Task<IActionResult> Index()
         {
             if (!IsAdmin())
-                return RedirectToAction("Login", "AccessDenied");
+                return RedirectToAction("AccessDenied", "Account");
             var customers = await _context.Customers.ToListAsync();
             return View(customers);
         }
@@ -69,9 +69,9 @@ namespace PBL3_QuanLyDatXe.Controllers
 
                 _context.Customers.Add(customers);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                //return RedirectToAction(nameof(Index));
             }
-            return View(customer);
+            return RedirectToAction("Account", "Login");
         }
 
         public async Task<IActionResult> Edit(int? id)
@@ -110,6 +110,8 @@ namespace PBL3_QuanLyDatXe.Controllers
 
         public async Task<IActionResult> Delete(int? id)
         {
+            if (!IsAdmin())
+                return RedirectToAction("AccessDenied", "Account");
             if (id == null) return NotFound();
 
             var customer = await _context.Customers.FindAsync(id);

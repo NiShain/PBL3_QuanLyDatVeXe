@@ -1,37 +1,42 @@
 ﻿@model PBL3_QuanLyDatXe.Models.Bus
-
 @{
-	ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Sửa thông tin xe";
+    Layout = "_AdminLayout";
 }
 
-<h2 class="text-center mb-4">Chỉnh sửa thông tin xe khách</h2>
-<form asp-action="Edit" method="post">
-    <input type="hidden" asp-for="id" />
+<div class="card">
+    <div class="card-body">
+        <form asp-action="Edit" method="post">
+            <input type="hidden" asp-for="id" />
 
-    <div class="form-group mb-4">
-        <label asp-for="tenXe"></label>
-        <input asp-for="tenXe" class="form-control" />
-        <span asp-validation-for="tenXe" class="text-danger"></span>
+            <div class="form-group mb-3">
+                <label asp-for="bienSo" class="form-label">Biển số</label>
+                <input asp-for="bienSo" class="form-control" />
+                <span asp-validation-for="bienSo" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="tenXe" class="form-label">Tên xe</label>
+                <input asp-for="tenXe" class="form-control" />
+                <span asp-validation-for="tenXe" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="soGhe" class="form-label">Số ghế</label>
+                <input asp-for="soGhe" class="form-control" type="number" />
+                <span asp-validation-for="soGhe" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="loaiXe" class="form-label">Loại xe</label>
+                <input asp-for="loaiXe" class="form-control" />
+                <span asp-validation-for="loaiXe" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+                <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+            </div>
+        </form>
     </div>
-
-    <div class="form-group mb-4">
-        <label asp-for="bienSo"></label>
-        <input asp-for="bienSo" class="form-control" />
-        <span asp-validation-for="bienSo" class="text-danger"></span>
-    </div>
-
-    <div class="form-group mb-4">
-        <label asp-for="soGhe"></label>
-        <input asp-for="soGhe" class="form-control" type="number" />
-        <span asp-validation-for="soGhe" class="text-danger"></span>
-    </div>
-
-    <div class="form-group mb-4">
-        <label asp-for="loaiXe"></label>
-        <input asp-for="loaiXe" class="form-control" />
-        <span asp-validation-for="loaiXe" class="text-danger"></span>
-    </div>
-
-    <button type="submit" class="btn btn-primary mb-4">Lưu</button>
-    <a asp-action="Index" class="btn btn-secondary mb-4">Quay lại</a>
-</form>
+</div>

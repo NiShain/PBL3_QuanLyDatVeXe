@@ -1,23 +1,31 @@
 ﻿@model PBL3_QuanLyDatXe.Models.Bus
-
 @{
-	ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Xóa xe";
+    Layout = "_AdminLayout";
 }
 
-<h2 class="text-danger text-center mb-4">Xác nhận xóa xe khách</h2>
+<div class="card">
+    <div class="card-body">
+        <h3 class="text-danger mb-4">Bạn có chắc chắn muốn xóa xe này?</h3>
 
-<div class="container col-md-6">
-	<div class="alert alert-danger">
-		<p>Bạn có chắc chắn muốn xóa xe khách này không?</p>
-		<p><strong>Biển số xe:</strong> @Model.bienSo</p>
-		<p><strong>Loại xe:</strong> @Model.loaiXe</p>
-		<p><strong>Số ghế:</strong> @Model.soGhe</p>
-	</div>
-	<form asp-action="DeleteConfirmed" method="post">
-		<input type="hidden" asp-for="id" />
-		<div class="form-group">
-			<button type="submit" class="btn btn-danger">Xóa</button>
-			<a asp-action="Index" class="btn btn-secondary">Hủy</a>
-		</div>
-	</form>
+        <dl class="row">
+            <dt class="col-sm-2">Biển số:</dt>
+            <dd class="col-sm-10">@Model.bienSo</dd>
+
+            <dt class="col-sm-2">Tên xe:</dt>
+            <dd class="col-sm-10">@Model.tenXe</dd>
+
+            <dt class="col-sm-2">Số ghế:</dt>
+            <dd class="col-sm-10">@Model.soGhe</dd>
+
+            <dt class="col-sm-2">Loại xe:</dt>
+            <dd class="col-sm-10">@Model.loaiXe</dd>
+        </dl>
+
+        <form asp-action="DeleteConfirmed" method="post">
+            <input type="hidden" asp-for="id" />
+            <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+            <button type="submit" class="btn btn-danger">Xác nhận xóa</button>
+        </form>
+    </div>
 </div>

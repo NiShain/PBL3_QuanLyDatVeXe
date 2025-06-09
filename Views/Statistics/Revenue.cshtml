@@ -2,50 +2,78 @@
 
 @{
     ViewData["Title"] = "Thống kê doanh thu";
+    Layout = "_AdminLayout";
 }
 
 <h2 class="mb-3">Thống kê doanh thu</h2>
 
-<form asp-action="Revenue" method="post" class="row g-3 mb-4">
-    <div class="col-md-4">
-        <label class="form-label">Từ ngày</label>
-        <input type="date" name="from" class="form-control" value="@Model.NgayBatDau?.ToString("yyyy-MM-dd")" />
+<div class="card mb-4">
+    <div class="card-body">
+        <form asp-action="Revenue" method="post" class="row g-3">
+            <div class="col-md-4">
+                <label class="form-label">Từ ngày</label>
+                <input type="date" name="from" class="form-control" value="@Model.NgayBatDau?.ToString("yyyy-MM-dd")" />
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Đến ngày</label>
+                <input type="date" name="to" class="form-control" value="@Model.NgayKetThuc?.ToString("yyyy-MM-dd")" />
+            </div>
+            <div class="col-md-4 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100">Lọc</button>
+            </div>
+        </form>
     </div>
-    <div class="col-md-4">
-        <label class="form-label">Đến ngày</label>
-        <input type="date" name="to" class="form-control" value="@Model.NgayKetThuc?.ToString("yyyy-MM-dd")" />
-    </div>
-    <div class="col-md-4 d-flex align-items-end">
-        <button type="submit" class="btn btn-primary w-100">Lọc</button>
-    </div>
-</form>
+</div>
 
-<div class="mb-4">
-    <h4>Tổng doanh thu: <span class="text-success fw-bold">@Model.TongDoanhThu.ToString("N0") VNĐ</span></h4>
-    <p>Tổng số vé bán: <strong>@Model.SoLuongVeBan</strong></p>
+<div class="card mb-4">
+    <div class="card-body">
+        <h4>Tổng doanh thu: <span class="text-success">@Model.TongDoanhThu.ToString("N0") VNĐ</span></h4>
+        <p>Tổng số vé bán: <strong>@Model.SoLuongVeBan</strong></p>
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Biểu đồ doanh thu</h5>
+        <select id="chartType" class="form-select" style="width: auto;">
+            <option value="day">Theo ngày</option>
+            <option value="month">Theo tháng</option>
+            <option value="year">Theo năm</option>
+        </select>
+    </div>
+    <div class="card-body">
+        <canvas id="revenueLineChart"></canvas>
+    </div>
 </div>
 
 @if (Model.ChiTiet != null && Model.ChiTiet.Any())
 {
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>Tuyến</th>
-                <th>Số vé</th>
-                <th>Doanh thu (VNĐ)</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.ChiTiet)
-            {
-                <tr>
-                    <td>@item.TenChuyenDi</td>
-                    <td>@item.SoVe</td>
-                    <td>@item.DoanhThu.ToString("N0")</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <div class="card">
+        <div class="card-header bg-white">
+            <h5 class="mb-0">Chi tiết doanh thu theo tuyến</h5>
+        </div>
+        <div class="card-body p-0">
+            <table class="table table-striped table-hover mb-0">
+                <thead class="bg-light">
+                    <tr>
+                        <th>Tuyến</th>
+                        <th>Số vé</th>
+                        <th>Doanh thu</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.ChiTiet)
+                    {
+                        <tr>
+                            <td>@item.TenChuyenDi</td>
+                            <td>@item.SoVe</td>
+                            <td>@item.DoanhThu.ToString("N0") VNĐ</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
 }
 else
 {

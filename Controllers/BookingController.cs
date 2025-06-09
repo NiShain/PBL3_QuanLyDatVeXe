@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using PBL3_QuanLyDatXe.Data;
 using PBL3_QuanLyDatXe.Models;
@@ -16,11 +17,80 @@ namespace PBL3_QuanLyDatXe.Controllers
             _context = context;
         }
 
-        public IActionResult Index()
-        {
-            return View();
-        }
 
+        public async Task<IActionResult> AdminInvoiceList(string sortOrder, string searchTerm)
+        {
+            ViewData["NameSortParam"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewData["StatusSortParam"] = sortOrder == "status" ? "status_desc" : "status";
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["CurrentSearchTerm"] = searchTerm;
+
+            
+            var tickets = await _context.Tickets
+                .Include(t => t.Customer)
+                .Include(t => t.Trip)
+                    .ThenInclude(trip => trip.Route)
+                .OrderByDescending(t => t.ngayDat)
+                .ToListAsync();
+
+            
+            var grouped = tickets.GroupBy(t => new { t.Customerid, t.Tripid, t.ngayDat });
+
+            var invoices = new List<InvoiceViewModels>();
+            foreach (var group in grouped)
+            {
+                var firstTicket = group.First();
+                var trip = firstTicket.Trip;
+                var customer = firstTicket.Customer;
+                var maCodeList = group.Select(t => t.Code).ToList();
+                bool isPaid = group.All(t => t.trangThai == "Đã thanh toán");
+
+                invoices.Add(new InvoiceViewModels
+                {
+                    tenKhachHang = customer.Name,
+                    tenChuyenDi = trip.Route?.tenTuyen ?? "",
+                    soGheDat = group.Count(),
+                    ngayDat = group.Key.ngayDat,
+                    ngayDi = trip.ngayDi,
+                    maCode = maCodeList,
+                    tongTien = trip.giaVe * group.Count(),
+                    TripID = trip.id,
+                    IsPaid = isPaid
+                });
+            }
+
+            // Áp dụng tìm kiếm nếu có
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                invoices = invoices.Where(i =>
+                    i.tenKhachHang.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+            }
+
+            // Áp dụng sắp xếp
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    invoices = invoices.OrderByDescending(i => i.tenKhachHang).ToList();
+                    break;
+                case "status":
+                    invoices = invoices.OrderBy(i => i.IsPaid).ToList();
+                    break;
+                case "status_desc":
+                    invoices = invoices.OrderByDescending(i => i.IsPaid).ToList();
+                    break;
+                default:
+                    invoices = invoices.OrderBy(i => i.tenKhachHang).ToList();
+                    break;
+            }
+
+            var model = new InvoiceListViewModels
+            {
+                Invoices = invoices
+            };
+
+            return View(model);
+        }
         public async Task<IActionResult> SelectRoute(string diemDi, string diemDen, string sortOrder)
         {
             // Lưu trạng thái tìm kiếm và sắp xếp

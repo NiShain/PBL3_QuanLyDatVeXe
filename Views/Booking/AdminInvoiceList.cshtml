@@ -1,0 +1,123 @@
+﻿@model PBL3_QuanLyDatXe.ViewModels.InvoiceListViewModels
+
+@{
+    ViewData["Title"] = "Quản lý hóa đơn vé xe";
+    Layout = "_AdminLayout";
+}
+
+<h2>🧾 Quản lý hóa đơn vé xe</h2>
+
+<div class="card mb-4">
+    <div class="card-header bg-white">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <h5>Sắp xếp và tìm kiếm:</h5>
+                <div class="input-group mb-3">
+                    <input type="text" id="searchInput" name="searchTerm" class="form-control"
+                           placeholder="Nhập tên khách hàng..."
+                           value="@ViewData["CurrentSearchTerm"]">
+                    <a asp-action="AdminInvoiceList"
+                       asp-route-sortOrder="@ViewData["NameSortParam"]"
+                       asp-route-searchTerm=""
+                       id="searchButton"
+                       class="btn btn-primary">
+                        <i class="bi bi-search"></i> Tìm kiếm
+                    </a>
+                </div>
+                <div class="mt-2">
+                    <a asp-action="AdminInvoiceList"
+                       asp-route-sortOrder="@ViewData["StatusSortParam"]"
+                       asp-route-searchTerm="@ViewData["CurrentSearchTerm"]"
+                       class="btn btn-sm @(ViewData["CurrentSort"]?.ToString() == "status" || ViewData["CurrentSort"]?.ToString() == "status_desc" ? "btn-primary" : "btn-outline-primary")">
+                        Trạng thái thanh toán
+                        @if (ViewData["CurrentSort"]?.ToString() == "status")
+                        {
+                            <i class="bi bi-arrow-up"></i>
+                        }
+                        else if (ViewData["CurrentSort"]?.ToString() == "status_desc")
+                        {
+                            <i class="bi bi-arrow-down"></i>
+                        }
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@foreach (var invoice in Model.Invoices)
+{
+    <div class="card shadow p-4 mb-4">
+        <dl class="row">
+            <dt class="col-sm-4">Tên khách hàng:</dt>
+            <dd class="col-sm-8">@invoice.tenKhachHang</dd>
+
+            <dt class="col-sm-4">Tuyến:</dt>
+            <dd class="col-sm-8">@invoice.tenChuyenDi</dd>
+
+            <dt class="col-sm-4">Ngày đi:</dt>
+            <dd class="col-sm-8">@invoice.ngayDi.ToString("dd/MM/yyyy")</dd>
+
+            <dt class="col-sm-4">Ngày đặt:</dt>
+            <dd class="col-sm-8">@invoice.ngayDat.ToString("dd/MM/yyyy HH:mm")</dd>
+
+            <dt class="col-sm-4">Số ghế đặt:</dt>
+            <dd class="col-sm-8">@invoice.soGheDat</dd>
+
+            <dt class="col-sm-4">Mã vé:</dt>
+            <dd class="col-sm-8">
+                <ul class="list-unstyled mb-0">
+                    @foreach (var code in invoice.maCode)
+                    {
+                        <li class="badge bg-secondary me-1">@code</li>
+                    }
+                </ul>
+            </dd>
+
+            <dt class="col-sm-4">Tổng tiền:</dt>
+            <dd class="col-sm-8 text-success fw-bold">@invoice.tongTien.ToString("N0") VNĐ</dd>
+
+            <dt class="col-sm-4">Trạng thái:</dt>
+            <dd class="col-sm-8">
+                @if (invoice.IsPaid)
+                {
+                    <span class="badge bg-success">Đã thanh toán</span>
+                }
+                else
+                {
+                    <span class="badge bg-warning text-dark">Chưa thanh toán</span>
+                }
+            </dd>
+        </dl>
+    </div>
+}
+
+@if (!Model.Invoices.Any())
+{
+    <div class="alert alert-info">Chưa có hóa đơn nào.</div>
+}
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#searchInput').on('keyup', function (e) {
+                if (e.key === 'Enter') {
+                    performSearch();
+                }
+            });
+
+            $('#searchButton').on('click', function (e) {
+                e.preventDefault();
+                performSearch();
+            });
+
+            function performSearch() {
+                var searchTerm = $('#searchInput').val();
+                var currentUrl = '@Url.Action("AdminInvoiceList")';
+                var sortOrder = '@ViewData["CurrentSort"]';
+
+                window.location.href = `${currentUrl}?searchTerm=${encodeURIComponent(searchTerm)}&sortOrder=${sortOrder}`;
+            }
+        });
+    </script>
+}

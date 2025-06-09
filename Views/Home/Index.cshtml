@@ -1,8 +1,132 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Trang chủ";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="banner animate-fade-in">
+    <img src="~/Img/banner.jpg" class="banner-image" alt="banner" />
 </div>
+
+<div class="booking animate-fade-in" style="animation-delay: 0.2s">
+    <div class="trip-type">
+        <label class="trip-option">
+            <input type="radio" name="trip" class="radio-custom" checked />
+            <span class="radio-label">Một chiều</span>
+        </label>
+        <label class="trip-option">
+            <input type="radio" name="trip" class="radio-custom" />
+            <span class="radio-label">Khứ hồi</span>
+        </label>
+    </div>
+    <div class="search-box">
+        <div class="form-group">
+            <label class="name-item"><i class="fas fa-map-marker-alt"></i> Điểm đến</label>
+            <select class="input-location">
+                <option value="" disabled selected>Chọn điểm đến</option>
+                <option value="Hà Nội">Hà Nội</option>
+                <option value="TP.HCM">TP.HCM</option>
+                <option value="Đà Nẵng">Đà Nẵng</option>
+                <option value="Đà Lạt">Đà Lạt</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="name-item"><i class="fas fa-map-marker"></i> Điểm đi</label>
+            <select class="input-location">
+                <option value="" disabled selected>Chọn điểm bắt đầu</option>
+                <option value="Hà Nội">Hà Nội</option>
+                <option value="TP.HCM">TP.HCM</option>
+                <option value="Đà Nẵng">Đà Nẵng</option>
+                <option value="Đà Lạt">Đà Lạt</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="name-item"><i class="far fa-calendar-alt"></i> Ngày đi</label>
+            <input type="date" class="input-date" />
+        </div>
+        <button class="btn-submit">
+            <i class="fa-solid fa-magnifying-glass"></i> Tìm chuyến
+        </button>
+    </div>
+</div>
+
+<div class="popular-trip animate-fade-in" style="animation-delay: 0.4s">
+    <div class="intro">
+        <h1>Tuyến phổ biến</h1>
+        <p>Những tuyến xe được khách hàng tin tưởng</p>
+    </div>
+    <div class="trip-container">
+        <!-- Giữ nguyên nội dung các box -->
+    </div>
+</div>
+
+<style>
+    .banner-image {
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    .booking {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        padding: 30px;
+        margin-top: -50px;
+        position: relative;
+        z-index: 2;
+    }
+
+    .trip-option {
+        margin-right: 20px;
+        cursor: pointer;
+        padding: 8px 15px;
+        border-radius: 20px;
+        transition: all 0.3s ease;
+    }
+
+        .trip-option:hover {
+            background-color: rgba(32, 114, 255, 0.1);
+        }
+
+    .radio-label {
+        margin-left: 8px;
+    }
+
+    .input-location, .input-date {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        font-size: 16px;
+        transition: all 0.3s ease;
+    }
+
+        .input-location:focus, .input-date:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(32, 114, 255, 0.2);
+            outline: none;
+        }
+
+    .btn-submit {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        padding: 12px 30px;
+        border-radius: 25px;
+        border: none;
+        font-size: 18px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(32, 114, 255, 0.3);
+        }
+
+    .box {
+        transition: all 0.3s ease;
+    }
+
+        .box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+</style>

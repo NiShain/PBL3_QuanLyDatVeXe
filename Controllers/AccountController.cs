@@ -16,7 +16,20 @@ namespace PBL3_QuanLyDatXe.Controllers
         {
             _context = context;
         }
+        public IActionResult Index()
+        {
+            var userIdStr = HttpContext.Session.GetString("UserId");
+            if (string.IsNullOrEmpty(userIdStr))
+                return RedirectToAction("Login", "Account");
 
+            // Lấy tất cả tài khoản (hoặc lọc theo nhu cầu)
+            var accounts = _context.Accounts
+        .Include(a => a.Customer)
+        .Where(a => a.role != "Admin")  // Lọc loại bỏ tài khoản admin
+        .ToList();
+
+            return View(accounts);
+        }
         [HttpGet]
         public IActionResult Login()
         {
@@ -34,11 +47,14 @@ namespace PBL3_QuanLyDatXe.Controllers
                 HttpContext.Session.SetString("Username", account.ten);
                 HttpContext.Session.SetString("Role", account.role);
 
-                if (account.role == "Admin") // Fix logic for role comparison
+                if (account.role == "Admin")
                 {
-                    return RedirectToAction("Index", "Trip");
+                    // Redirect đến một trang admin cụ thể, ví dụ trang quản lý xe
+                    return RedirectToAction("Index", "Bus");
+                    // Hoặc có thể redirect đến dashboard
+                    // return RedirectToAction("Index", "Dashboard");
                 }
-                else if (account.role == "customer") // Fix logic for role comparison
+                else if (account.role == "customer") 
                 {
                     return RedirectToAction("Index", "Home");
                 }
