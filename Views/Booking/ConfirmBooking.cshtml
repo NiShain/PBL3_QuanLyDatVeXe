@@ -4,52 +4,46 @@
     ViewData["Title"] = "Hóa đơn đặt vé";
 }
 
-<h2 class="mb-4 text-center text-primary">🧾 Hóa đơn đặt vé</h2>
+<h2 class="mb-4">🧾 Hóa đơn đặt vé</h2>
 
-<div class="card shadow-lg p-4 border-0 rounded">
-    <dl class="row mb-4">
-        <dt class="col-sm-4 text-muted">Tên khách hàng:</dt>
-        <dd class="col-sm-8 fw-bold">@Model.tenKhachHang</dd>
+<div class="card shadow p-4">
+    <dl class="row">
+        <dt class="col-sm-4">Tên khách hàng:</dt>
+        <dd class="col-sm-8">@Model.tenKhachHang</dd>
 
-        <dt class="col-sm-4 text-muted">Tuyến:</dt>
+        <dt class="col-sm-4">Tuyến:</dt>
         <dd class="col-sm-8">@Model.tenChuyenDi</dd>
 
-        <dt class="col-sm-4 text-muted">Ngày đi:</dt>
+        <dt class="col-sm-4">Ngày đi:</dt>
         <dd class="col-sm-8">@Model.ngayDi.ToString("dd/MM/yyyy")</dd>
 
-        <dt class="col-sm-4 text-muted">Ngày đặt:</dt>
+        <dt class="col-sm-4">Ngày đặt:</dt>
         <dd class="col-sm-8">@Model.ngayDat.ToString("dd/MM/yyyy HH:mm")</dd>
 
-        <dt class="col-sm-4 text-muted">Số ghế đặt:</dt>
-        <dd class="col-sm-8 fw-bold">@Model.soGheDat</dd>
+        <dt class="col-sm-4">Số ghế đặt:</dt>
+        <dd class="col-sm-8">@Model.soGheDat</dd>
 
-        <dt class="col-sm-4 text-muted">Mã vé:</dt>
+        <dt class="col-sm-4">Mã vé:</dt>
         <dd class="col-sm-8">
-            <ul class="list-unstyled mb-0 d-flex flex-wrap">
+            <ul class="list-unstyled mb-0">
                 @foreach (var code in Model.maCode)
                 {
-                    <li class="badge bg-info text-dark me-2 mb-1 p-2">@code</li>
+                    <li class="badge bg-secondary me-1">@code</li>
                 }
             </ul>
         </dd>
 
-        <dt class="col-sm-4 text-muted">Tổng tiền:</dt>
-        <dd class="col-sm-8 text-success fw-bold fs-5">@Model.tongTien.ToString("N0") VNĐ</dd>
+        <dt class="col-sm-4">Tổng tiền:</dt>
+        <dd class="col-sm-8 text-success fw-bold">@Model.tongTien.ToString("N0") VNĐ</dd>
     </dl>
 
-    <div class="text-center">
-        <form asp-controller="Payment" asp-action="CreatePaymentUrlVnpay" method="post">
-            <input type="hidden" name="OrderType" value="ticket" />
-            <input type="hidden" name="Amount" value="@Model.tongTien" />
-            <input type="hidden" name="OrderDescription" value="Thanh toán vé xe tuyến @Model.tenChuyenDi ngày @Model.ngayDi.ToString("dd/MM/yyyy")" />
-            <input type="hidden" name="Name" value="@Model.tenKhachHang" />
-            <button type="submit" class="btn btn-primary shadow-sm px-4 py-2 rounded-pill mt-3">
-                💳 Thanh toán VNPay
-            </button>
-        </form>
+    <form asp-controller="Payment" asp-action="CreatePaymentUrlVnpay" method="post">
+        <input type="hidden" name="OrderType" value="ticket" />
+        <input type="hidden" name="Amount" value="@Model.tongTien" />
+        <input type="hidden" name="OrderDescription" value="Thanh toán vé xe tuyến @Model.tenChuyenDi ngày @Model.ngayDi.ToString("dd/MM/yyyy")" />
+        <input type="hidden" name="Name" value="@Model.tenKhachHang" />
+        <button type="submit" class="btn btn-primary mt-3">Thanh toán VNPay</button>
+    </form>
 
-        <a asp-controller="Home" asp-action="Index" class="btn btn-success shadow-sm px-4 py-2 rounded-pill mt-3">
-            🔙 Quay về trang chính
-        </a>
-    </div>
+    <a asp-controller="Home" asp-action="Index" class="btn btn-success mt-3">🔙 Quay về trang chính</a>
 </div>

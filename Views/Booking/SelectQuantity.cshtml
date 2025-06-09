@@ -4,40 +4,15 @@
     ViewData["Title"] = "Chọn số ghế";
 }
 
-<div class="card p-4 shadow-sm mx-auto" style="max-width: 500px;">
-    <div class="card-body">
-        <h3 class="card-title text-center mb-4">🪑 Chọn số lượng ghế</h3>
+<h2 class="mb-4">🪑 Chọn số lượng ghế muốn đặt</h2>
 
-        @if (soGheConTrong > 0)
-        {
-            <form asp-action="ConfirmBooking" method="post">
-                <input type="hidden" name="tripId" value="@tripId" />
-
-                <div class="mb-4">
-                    <label for="soLuongGheInput" class="form-label">Số lượng vé bạn muốn đặt:</label>
-                    <div class="input-group">
-                        <button class="btn btn-outline-secondary" type="button" id="giamBtn">-</button>
-                        <input type="number" id="soLuongGheInput" name="soLuongGhe" class="form-control text-center" value="1" min="1" max="@soGheConTrong" required />
-                        <button class="btn btn-outline-secondary" type="button" id="tangBtn">+</button>
-                    </div>
-                    <div class="form-text text-center mt-2">
-                        (Còn lại <strong>@soGheConTrong</strong> ghế trống)
-                    </div>
-                </div>
-
-                <div class="d-grid">
-                    <button type="submit" class="btn btn-primary btn-lg">Tiếp Tục</button>
-                </div>
-            </form>
-        }
-        else
-        {
-            <div class="alert alert-warning text-center" role="alert">
-                <h4 class="alert-heading">Đã hết vé!</h4>
-                <p>Rất tiếc, chuyến đi này đã được đặt hết chỗ. Vui lòng quay lại và chọn một chuyến khác.</p>
-            </div>
-        }
-    </div>
+<div class="card p-4 shadow-sm">
+    <form asp-action="ConfirmBooking" method="post">
+        <input type="hidden" name="tripId" value="@tripId" />
+        <div class="mb-3">
+            <label class="form-label">Số lượng ghế (tối đa: @soGheConTrong)</label>
+            <input type="number" name="soLuongGhe" min="1" max="@soGheConTrong" class="form-control" required />
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Đặt vé</button>
+    </form>
 </div>
-
-

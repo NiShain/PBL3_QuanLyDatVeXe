@@ -23,7 +23,7 @@ h1 {
 	border-radius: 20px;
 }
 
-.box-container {
+.trip-container {
 	justify-content: space-around;
 	align-items: center;
 	display: flex;
@@ -55,6 +55,15 @@ h1 {
 	overflow: hidden;
 }
 
+.route-destination {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	width: 100%;
+	padding: 10px;
+	border-top: 1px solid gray;
+}
+
 .text-overlay {
 	position: absolute;
 	bottom: 10px;
@@ -67,13 +76,4 @@ h1 {
 .route-city {
 	font-weight: bold;
 	font-size: 19px;
-}
-
-.route-destination {
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	width: 100%;
-	padding: 10px;
-	border-top: 1px solid gray;
 }

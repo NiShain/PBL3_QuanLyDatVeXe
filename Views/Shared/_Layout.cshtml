@@ -8,24 +8,28 @@
     @* CSS files *@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/PBL3_QuanLyDatXe.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/footer.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/header.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/menu.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/recommend.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/searchbox.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/animations.css" asp-append-version="false" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.css" />
-
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap&subset=vietnamese" rel="stylesheet">
-
 
     <style>
         :root {
             --primary-color: #2072ff;
             --secondary-color: #4585ff;
             --accent-color: #ff6b00;
-            --footer-bg: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        }
+
+        html {
+            position: relative;
+            min-height: 100vh;
         }
 
         body {
-            font-family: "Roboto", sans-serif; 
             margin: 0;
             padding: 0;
             min-height: 100vh;
@@ -36,60 +40,50 @@
 
         .page-wrapper {
             flex: 1 0 auto;
-            padding-bottom: 80px;
+            padding-bottom: 100px;
         }
 
-        /* Header */
         .topbar {
             background: linear-gradient(135deg, #ffffff, var(--secondary-color));
-            padding: 12px 0;
+            padding: 15px 0;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
         }
-
-            .topbar .slogan {
-                font-size: 1.2em;
-                font-weight: bold;
-            }
 
         .menu {
             background-color: var(--primary-color);
             padding: 10px 0;
         }
 
-            .menu ul {
-                list-style: none;
-                padding: 0;
-                display: flex;
-                justify-content: center;
+            .menu ul li a {
+                transition: all 0.3s ease;
+                position: relative;
             }
 
-                .menu ul li {
-                    margin: 0 15px;
+                .menu ul li a:hover {
+                    color: var(--accent-color);
                 }
 
-                    .menu ul li a {
-                        text-decoration: none;
-                        color: white;
-                        font-weight: bold;
-                        transition: all 0.3s ease;
-                        position: relative;
-                    }
+                .menu ul li a:after {
+                    content: '';
+                    position: absolute;
+                    width: 0;
+                    height: 2px;
+                    background: var(--accent-color);
+                    bottom: -5px;
+                    left: 0;
+                    transition: width 0.3s ease;
+                }
 
-                        .menu ul li a:hover {
-                            color: var(--accent-color);
-                        }
+                .menu ul li a:hover:after {
+                    width: 100%;
+                }
 
-        /* Login Button */
         .btn-login {
             background-color: var(--primary-color);
             border: none;
-            padding: 8px 18px;
+            padding: 8px 20px;
             border-radius: 20px;
             transition: all 0.3s ease;
-            cursor: pointer;
         }
 
             .btn-login:hover {
@@ -98,44 +92,31 @@
                 box-shadow: 0 4px 8px rgba(0,0,0,0.1);
             }
 
-        /* Footer */
+            .btn-login a {
+                color: white !important;
+                text-decoration: none;
+            }
+
         .footer {
-            background: var(--footer-bg);
+            margin-top: auto;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
             color: white;
-            padding: 15px 0; /* Reduced padding */
-            font-size: 0.85em; /* Smaller text */
-            position: relative;
+            padding: 40px 0;
+            position: absolute;
             bottom: 0;
             width: 100%;
-            text-align: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
 
-            .footer .container {
-                width: 80%;
-                margin: auto;
-                display: flex;
-                justify-content: space-around;
-            }
+        .container {
+            width: 100%;
+            padding: 0;
+            margin: 0;
+            max-width: none;
+        }
 
-            .footer .col-md-4 {
-                flex: 1;
-                margin: 0 8px;
-            }
-
-            .footer h4 {
-                font-size: 1.2em; 
-                font-weight: bold;
-            }
-
-            .footer p {
-                font-size: 1em; 
-            }
-
-            .footer img {
-                width: 60%; 
-                margin-bottom: 5px;
-            }
+        main {
+            margin-bottom: 30px;
+        }
     </style>
 </head>
 <body>
@@ -181,31 +162,43 @@
                         <li><a asp-controller="Home" asp-action="Index">Trang Chủ</a></li>
                         <li><a asp-controller="Booking" asp-action="SelectRoute">Lịch Trình</a></li>
                         <li><a asp-controller="Booking" asp-action="ConfirmBooking">Hóa Đơn</a></li>
-                        <li><a href="facebook.com/dongocle2404" class="scroll-link">Liên Hệ</a></li>
+                        <li><a href="#footer" class="scroll-link">Liên Hệ</a></li>
                     }
                 </ul>
             </nav>
         </div>
 
-        <main role="main">
+        <main role="main" class="animate-fade-in">
             @RenderBody()
         </main>
     </div>
 
     <div class="footer" id="footer">
         <div class="container">
-            <div class="col-md-4">
-                <img src="~/Img/logo_footer.png" id="logo-footer" alt="logo footer" />
-            </div>
-            <div class="col-md-4">
-                <h4><i class="fa-solid fa-location-dot"></i> Địa Chỉ</h4>
-                <p>Trụ sở: Số 97-99 Cao Sơn Pháo, Đà Nẵng</p>
-                <p>Bến xe TT: 148 Tôn Đức Thắng, Đà Nẵng</p>
-            </div>
-            <div class="col-md-4">
-                <h4>Liên hệ</h4>
-                <p><i class="fa-solid fa-phone"></i> 0236.376.76.79</p>
-                <p><i class="fa-solid fa-envelope"></i> info@benxedanang.vn</p>
+            <div class="row">
+                <div class="col-md-4">
+                    <img src="~/Img/logo_footer.png" id="logo-footer" alt="logo footer" class="mb-4" />
+                </div>
+                <div class="col-md-4">
+                    <h4><i class="fa-solid fa-location-dot"></i> Địa Chỉ</h4>
+                    <p class="address">
+                        <i class="fa-regular fa-building"></i>
+                        Trụ sở: Số 97-99 Cao Sơn Pháo, P. Hòa An, Q. Cẩm lệ, TP. Đà Nẵng
+                    </p>
+                    <p class="address">
+                        <i class="fa-regular fa-building"></i>
+                        Bến xe TT: 148 Tôn Đức Thắng, P. Hòa Minh, Q. Liên Chiểu, TP. Đà Nẵng
+                    </p>
+                </div>
+                <div class="col-md-4">
+                    <h4>Liên hệ</h4>
+                    <p class="contact">
+                        <i class="fa-solid fa-phone"></i> Tổng đài: 0236.376.76.79
+                    </p>
+                    <p class="contact">
+                        <i class="fa-solid fa-envelope"></i> Email: info@benxedanang.vn
+                    </p>
+                </div>
             </div>
         </div>
     </div>
