@@ -4,8 +4,15 @@
 @import url(searchbox.css);
 @import url(recommend.css);
 @import url(login.css);
+@import url(ScheduleTable.css);
+@import url(CheckBill.css);
+@import url(CheckTicket.css);
 @import url(SignUp.css);
-
+@import url(AdminHome.css);
+@import url(Manage.css);
+@import url(Admin.css);
+@import url(BoxModel.css);
+@import url(booking.css);
 * {
 	margin: 0;
 	padding: 0;

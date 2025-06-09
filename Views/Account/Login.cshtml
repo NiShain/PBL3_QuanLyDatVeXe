@@ -2,12 +2,90 @@
 
 @{
     ViewData["Title"] = "Đăng nhập";
+    Layout = "_Layout"; // Assuming this is your main public layout
 }
 
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-4">
-            <h2 class="text-center mb-4">Đăng nhập</h2>
+<style>
+    /* Custom styles for the login/register forms */
+    .auth-card {
+        background-color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); /* More prominent shadow */
+        padding: 40px;
+        margin-top: 50px;
+        border: 1px solid #e0e0e0; /* Light border */
+    }
+
+        .auth-card h2 {
+            color: var(--primary-color, #2072ff); /* Use primary color from your site CSS */
+            font-weight: bold;
+            margin-bottom: 30px;
+        }
+
+    .form-group label {
+        font-weight: 500;
+        color: #333;
+        margin-bottom: 8px;
+    }
+
+    .form-control {
+        border-radius: 8px; /* Slightly more rounded */
+        padding: 12px 15px;
+        border: 1px solid #ced4da;
+        transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    }
+
+        .form-control:focus {
+            border-color: var(--primary-color, #2072ff);
+            box-shadow: 0 0 0 0.25rem rgba(32, 114, 255, 0.25); /* Focus ring with primary color */
+        }
+
+    .btn-login-register {
+        background-color: var(--primary-color, #2072ff);
+        border: none;
+        padding: 12px 25px;
+        border-radius: 25px; /* Fully rounded for buttons */
+        font-weight: bold;
+        transition: all 0.3s ease;
+        letter-spacing: 0.5px;
+        margin-top: 15px; /* Space above button */
+    }
+
+        .btn-login-register:hover {
+            background-color: var(--secondary-color, #4585ff); /* Secondary color on hover */
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+    .login-options {
+        text-align: center;
+        margin-top: 25px;
+        font-size: 0.95em;
+    }
+
+        .login-options a {
+            color: var(--primary-color, #2072ff);
+            font-weight: 600;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+            .login-options a:hover {
+                color: var(--accent-color, #ff6b00);
+            }
+
+    .alert {
+        border-radius: 8px;
+        margin-bottom: 20px;
+        padding: 15px 20px;
+        font-size: 0.95em;
+    }
+</style>
+
+<div class="container d-flex justify-content-center align-items-center min-vh-100">
+    <div class="col-md-4">
+        <div class="auth-card">
+            <h2 class="text-center">Đăng nhập</h2>
 
             @if (TempData["SuccessMessage"] != null)
             {
@@ -25,13 +103,23 @@
                     <input asp-for="ten" class="form-control" placeholder="Nhập tên đăng nhập" />
                     <span asp-validation-for="ten" class="text-danger"></span>
                 </div>
-                <div class="form-group mb-3">
+                <div class="form-group mb-4">
                     <label for="password">Mật khẩu</label>
                     <input asp-for="password" class="form-control" type="password" placeholder="Nhập mật khẩu" />
                     <span asp-validation-for="password" class="text-danger"></span>
                 </div>
-                <button type="submit" class="btn btn-primary w-100">Đăng nhập</button>
+                <button type="submit" class="btn btn-primary w-100 btn-login-register">Đăng nhập</button>
             </form>
+
+            <div class="login-options">
+                Chưa có tài khoản? <a asp-controller="Customer" asp-action="Create">Đăng ký ngay</a>
+            </div>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

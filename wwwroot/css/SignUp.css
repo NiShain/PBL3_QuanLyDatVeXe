@@ -39,17 +39,6 @@
     cursor: pointer;
 }
 
-.exit-btn {
-    margin-top: 20px;
-    padding: 12px 24px;
-    font-size: 16px;
-    border-radius: 8px;
-    background-color: #6c7ae0;
-    color: white;
-    border: none;
-    cursor: pointer;
-}
-
 .signup-text {
     margin-top: 20px;
     display: block;
